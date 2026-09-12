@@ -5,6 +5,12 @@
 *.key
 credentials.json
 
+# ---- DATASET (never commit: twcs.csv is ~493MB; GitHub hard-rejects >100MB) ----
+# The official dataset stays local and is fetched by the reader via the README.
+twcs/
+twcs.csv
+tws.csv
+
 # ---- python ----
 __pycache__/
 *.py[cod]
@@ -25,10 +31,28 @@ env/
 .coverage
 htmlcov/
 
-# ---- run artifacts (keep committed results explicit, not accidental) ----
-*.log
+# ---- generated caches ----
 .cache/
+cache/
 scratch/
+*.log
+
+# NOTE (unresolved): the <15-minute reproducibility requirement may force the
+# LLM response cache to be COMMITTED, so a grader can reproduce headline results
+# without an API key. If we land that decision, carve it out explicitly, e.g.:
+#   !cache/llm/
+# Left ignored for now - decision pending.
+
+# ---- generated evaluation outputs ----
+outputs/
+results/
+runs/
+reports/generated/
+figures/
+
+# Hand-labelled data and the final report are deliverables - keep them tracked.
+!data/golden/
+!data/golden/**
 
 # ---- os ----
 .DS_Store
