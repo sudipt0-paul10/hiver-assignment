@@ -1,0 +1,126 @@
+{
+  "_warning": "RETEST KEY - DO NOT OPEN BEFORE THE SECOND PASS IS COMPLETE. It maps each R id back to its golden id; seeing it defeats the blindness the whole procedure depends on.",
+  "seed": 1212,
+  "items": {
+    "R001": {
+      "golden_id": "G051",
+      "retest_stratum": "retest:random"
+    },
+    "R002": {
+      "golden_id": "G058",
+      "retest_stratum": "retest:random"
+    },
+    "R003": {
+      "golden_id": "G168",
+      "retest_stratum": "retest:random"
+    },
+    "R004": {
+      "golden_id": "G069",
+      "retest_stratum": "retest:random"
+    },
+    "R005": {
+      "golden_id": "G092",
+      "retest_stratum": "retest:other_unclear_confident"
+    },
+    "R006": {
+      "golden_id": "G121",
+      "retest_stratum": "retest:other_unclear_confident"
+    },
+    "R007": {
+      "golden_id": "G084",
+      "retest_stratum": "retest:escalation_deviant"
+    },
+    "R008": {
+      "golden_id": "G175",
+      "retest_stratum": "retest:low_confidence"
+    },
+    "R009": {
+      "golden_id": "G045",
+      "retest_stratum": "retest:other_unclear_confident"
+    },
+    "R010": {
+      "golden_id": "G015",
+      "retest_stratum": "retest:random"
+    },
+    "R011": {
+      "golden_id": "G027",
+      "retest_stratum": "retest:random"
+    },
+    "R012": {
+      "golden_id": "G181",
+      "retest_stratum": "retest:low_confidence"
+    },
+    "R013": {
+      "golden_id": "G171",
+      "retest_stratum": "retest:low_confidence"
+    },
+    "R014": {
+      "golden_id": "G100",
+      "retest_stratum": "retest:boundary"
+    },
+    "R015": {
+      "golden_id": "G095",
+      "retest_stratum": "retest:random"
+    },
+    "R016": {
+      "golden_id": "G048",
+      "retest_stratum": "retest:random"
+    },
+    "R017": {
+      "golden_id": "G055",
+      "retest_stratum": "retest:random"
+    },
+    "R018": {
+      "golden_id": "G101",
+      "retest_stratum": "retest:other_unclear_confident"
+    },
+    "R019": {
+      "golden_id": "G137",
+      "retest_stratum": "retest:boundary"
+    },
+    "R020": {
+      "golden_id": "G177",
+      "retest_stratum": "retest:escalation_deviant"
+    },
+    "R021": {
+      "golden_id": "G163",
+      "retest_stratum": "retest:low_confidence"
+    },
+    "R022": {
+      "golden_id": "G047",
+      "retest_stratum": "retest:low_confidence"
+    },
+    "R023": {
+      "golden_id": "G166",
+      "retest_stratum": "retest:low_confidence"
+    },
+    "R024": {
+      "golden_id": "G083",
+      "retest_stratum": "retest:random"
+    },
+    "R025": {
+      "golden_id": "G087",
+      "retest_stratum": "retest:escalation_deviant"
+    },
+    "R026": {
+      "golden_id": "G143",
+      "retest_stratum": "retest:other_unclear_confident"
+    },
+    "R027": {
+      "golden_id": "G156",
+      "retest_stratum": "retest:boundary"
+    },
+    "R028": {
+      "golden_id": "G146",
+      "retest_stratum": "retest:random"
+    },
+    "R029": {
+      "golden_id": "G123",
+      "retest_stratum": "retest:low_confidence"
+    },
+    "R030": {
+      "golden_id": "G106",
+      "retest_stratum": "retest:random"
+    }
+  }
+}

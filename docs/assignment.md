@@ -35,4 +35,4 @@ Prevent leakage and misleading evaluation:
 - do not claim TWCS contains true escalation ground truth.
 
 ## Cost constraint
-Keep API spend very low, target $0–$10, cache calls, and avoid unnecessary bulk LLM processing or paid infrastructure.
+Keep API spend very low, target $0–$10, cache calls, and avoid unnecessary bulk LLM processing or paid infrastructure. (Our working budget policy: target ₹0–₹500, absolute ceiling ~₹1,000; see D19.)

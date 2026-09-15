@@ -1,4 +1,12 @@
 * text=auto eol=lf
 *.png binary
 *.pdf binary
+# the golden-set workbooks are the authoritative human annotation; eol conversion
+# would corrupt them
+*.xlsx binary
 *.jsonl text eol=lf
+
+# The golden-set CSVs are RFC-4180 CRLF and are verified byte-for-byte against
+# twcs.csv. Any eol normalisation would break that check on a fresh clone, so
+# git must not touch them.
+data/golden/*.csv -text

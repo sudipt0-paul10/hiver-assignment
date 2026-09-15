@@ -1,0 +1,63 @@
+{
+  "procedure": "D12 delayed blind re-label (test-retest), intra-annotator reliability",
+  "seed": 1212,
+  "n_items": 30,
+  "built_utc": "2026-09-14T04:05:07.945737+00:00",
+  "earliest_start_utc": "2026-09-19T04:05:07.945737+00:00",
+  "delay_days": 5,
+  "source_annotations": "data/golden/golden_annotated.csv",
+  "source_annotations_sha256": "305a03238f53e14bd084d2bced9c75d19953f6433d3546cb7bcac2cd4ebec8cc",
+  "source_key_sha256": "8d40728d2faf2ed3378177da18fbf0d5f3878fdc29b95f417758842410668840",
+  "strata": {
+    "retest:random": 12,
+    "retest:low_confidence": 7,
+    "retest:other_unclear_confident": 5,
+    "retest:boundary": 3,
+    "retest:escalation_deviant": 3
+  },
+  "draw_log": [
+    {
+      "stratum": "retest:random",
+      "requested": 12,
+      "eligible_at_draw": 200,
+      "drawn": 12,
+      "inclusion_prob": 0.06
+    },
+    {
+      "stratum": "retest:low_confidence",
+      "requested": 7,
+      "eligible_at_draw": 14,
+      "drawn": 7,
+      "inclusion_prob": 0.5
+    },
+    {
+      "stratum": "retest:other_unclear_confident",
+      "requested": 5,
+      "eligible_at_draw": 15,
+      "drawn": 5,
+      "inclusion_prob": 0.333333
+    },
+    {
+      "stratum": "retest:boundary",
+      "requested": 3,
+      "eligible_at_draw": 10,
+      "drawn": 3,
+      "inclusion_prob": 0.3
+    },
+    {
+      "stratum": "retest:escalation_deviant",
+      "requested": 3,
+      "eligible_at_draw": 12,
+      "drawn": 3,
+      "inclusion_prob": 0.25
+    }
+  ],
+  "first_pass_labels_in_annotation_artefacts": false,
+  "golden_ids_in_annotation_artefacts": false,
+  "note": "Only 'retest:random' is unbiased over the 200. The other four strata deliberately over-sample where the first pass hesitated, so the POOLED self-agreement is a conservative lower bound, not the population figure. Report per-stratum agreement, and read the population ceiling off 'retest:random' with its interval.",
+  "files": {
+    "items": "data/golden/retest_items.csv",
+    "items_xlsx": "data/golden/retest_items.xlsx",
+    "key": "data/golden/retest_key.json"
+  }
+}

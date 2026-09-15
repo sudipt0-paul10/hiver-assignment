@@ -33,15 +33,17 @@ htmlcov/
 
 # ---- generated caches ----
 .cache/
-cache/
 scratch/
 *.log
 
-# NOTE (unresolved): the <15-minute reproducibility requirement may force the
-# LLM response cache to be COMMITTED, so a grader can reproduce headline results
-# without an API key. If we land that decision, carve it out explicitly, e.g.:
-#   !cache/llm/
-# Left ignored for now - decision pending.
+# The LLM response cache IS committed (D22, resolved). The assignment requires a
+# grader to reproduce headline results in under 15 minutes, and a grader has no
+# API key - replaying the cache is the only way that works. Note the pattern:
+# `cache/*` rather than `cache/`, because git will not descend into an excluded
+# directory, so a negation inside one would never match.
+cache/*
+!cache/llm/
+# cache/corpus/ stays out: it is a 14 MB pickle rebuilt from twcs.csv in ~30 s.
 
 # ---- generated evaluation outputs ----
 outputs/

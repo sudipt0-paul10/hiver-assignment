@@ -1,0 +1,316 @@
+{
+  "$comment": "Machine-readable SpotifyCares codebook. PROPOSED, not locked. Prose definitions, examples and boundary rules live in docs/taxonomy.md, which is authoritative. Evidence is train-split only; no dataset rows are stored here.",
+  "version": "0.2.1-proposed",
+  "status": "proposed",
+  "brand": "SpotifyCares",
+  "evidence": {
+    "split_used": "train",
+    "train_window": [
+      "2017-10-01",
+      "2017-11-06"
+    ],
+    "n_openers": 14547,
+    "reproduce": "python scripts/taxonomy.py --csv twcs/twcs.csv --k 8",
+    "cluster_structure": "KMeans silhouette ~0 at all k (best 0.0125 at k=10); taxonomy is designed, not discovered",
+    "prevalence_caveat": "Ranges bracket two disagreeing proxies: NMF soft-topic shares over-assign, keyword seeds under-assign. Pilot produces real numbers.",
+    "must_caveat": "must_proxy_pct is the profile.MUST_PROXY keyword proxy, not a label"
+  },
+  "intent": {
+    "type": "single_label",
+    "mutually_exclusive": true,
+    "values": [
+      {
+        "name": "account_access",
+        "definition": "The customer cannot get into, or has lost control of, their account.",
+        "prevalence_est_pct": [
+          10,
+          15
+        ],
+        "reply_dm_pct": 76.9,
+        "must_proxy_pct": 23.0,
+        "escalation_role": "independent",
+        "confusable_with": [
+          "billing_subscription",
+          "app_device_technical",
+          "plans_eligibility"
+        ]
+      },
+      {
+        "name": "billing_subscription",
+        "definition": "Money has moved, or failed to move, and the customer disputes or questions it.",
+        "prevalence_est_pct": [
+          6,
+          9
+        ],
+        "reply_dm_pct": 70.6,
+        "must_proxy_pct": 11.2,
+        "escalation_role": "independent",
+        "confusable_with": [
+          "plans_eligibility",
+          "account_access"
+        ]
+      },
+      {
+        "name": "plans_eligibility",
+        "definition": "Which plan applies, joining or switching plans, or qualifying for a price, with no specific charge disputed.",
+        "prevalence_est_pct": [
+          5,
+          8
+        ],
+        "reply_dm_pct": 65.9,
+        "must_proxy_pct": 2.3,
+        "escalation_role": "inherits",
+        "confusable_with": [
+          "billing_subscription",
+          "product_feature_feedback"
+        ]
+      },
+      {
+        "name": "content_availability",
+        "definition": "Content, or the service itself, is absent from the catalogue or the customer's region.",
+        "prevalence_est_pct": [
+          5,
+          8
+        ],
+        "reply_dm_pct": 11.7,
+        "must_proxy_pct": 0.1,
+        "escalation_role": "inherits",
+        "confusable_with": [
+          "playback_playlist",
+          "product_feature_feedback"
+        ]
+      },
+      {
+        "name": "playback_playlist",
+        "definition": "Music that exists does not play, or playlist/library behaviour is wrong, independent of device.",
+        "prevalence_est_pct": [
+          20,
+          30
+        ],
+        "reply_dm_pct": 14.9,
+        "must_proxy_pct": 0.6,
+        "escalation_role": "inherits",
+        "confusable_with": [
+          "app_device_technical",
+          "content_availability",
+          "product_feature_feedback"
+        ]
+      },
+      {
+        "name": "app_device_technical",
+        "definition": "The client, or its integration with an OS, device or third-party hardware, malfunctions.",
+        "prevalence_est_pct": [
+          10,
+          14
+        ],
+        "reply_dm_pct": 16.3,
+        "must_proxy_pct": 1.3,
+        "escalation_role": "inherits",
+        "confusable_with": [
+          "playback_playlist",
+          "account_access"
+        ]
+      },
+      {
+        "name": "product_feature_feedback",
+        "definition": "A request for a capability that does not exist, or evaluative feedback on intended behaviour, with nothing to fix.",
+        "prevalence_est_pct": [
+          4,
+          8
+        ],
+        "reply_dm_pct": 15.3,
+        "must_proxy_pct": 0.4,
+        "escalation_role": "inherits",
+        "provisional": true,
+        "provisional_reason": "Narrow seed measures 3.63%, below the 4% viability floor. Seed is demonstrably narrow; pilot must confirm.",
+        "confusable_with": [
+          "playback_playlist",
+          "app_device_technical",
+          "plans_eligibility",
+          "content_availability"
+        ]
+      },
+      {
+        "name": "other_unclear",
+        "definition": "Cannot be confidently assigned: too little information, genuinely ambiguous, off-topic or uninterpretable. Also absorbs social-only praise carrying no actionable request.",
+        "prevalence_est_pct": [
+          5,
+          12
+        ],
+        "reply_dm_pct": 34.4,
+        "must_proxy_pct": 0.3,
+        "escalation_role": "independent",
+        "health_metric": "Above ~15% in the pilot means the taxonomy is inadequate and must be revised before golden-set labelling.",
+        "confusable_with": [
+          "all"
+        ],
+        "absorbed": [
+          "social_praise (removed in 0.2.0 - no valid instance in the 40-item pilot)"
+        ]
+      }
+    ]
+  },
+  "attributes": {
+    "$comment": "Orthogonal to intent. Never part of the mutually exclusive intent label.",
+    "conversation_state": {
+      "values": [
+        "opener",
+        "existing_case_followup",
+        "unclear"
+      ],
+      "rationale": "DM-followup language predicts a 94.9% reply-DM rate vs 36.7% when absent, but occurs in only 0.41% of openers - far below the 4% class floor. Highly informative as a flag, unlearnable as a class."
+    },
+    "urgency": {
+      "values": [
+        "low",
+        "normal",
+        "high"
+      ],
+      "rationale": "The pilot's help/need/asap meta-cluster was a register, not a subject; at k=10 it split into two near-identical pleading clusters (DM 56.4% / 45.1%) whose content was account and billing issues."
+    },
+    "frustration": {
+      "values": [
+        "low",
+        "normal",
+        "high"
+      ],
+      "rationale": "Emotional intensity is an attribute per D9; it never defines an intent."
+    },
+    "language": {
+      "values": [
+        "english",
+        "non_english",
+        "unclear"
+      ],
+      "rationale": "Observed in 3/40 pilot items (7.5%) - Indonesian, Swedish and Thai - far above the 0.2% character heuristic reported in docs/profile.md, which that document already flags as untrustworthy. Language is a property of the message, not of what the customer wants.",
+      "rules": [
+        "Language is NOT an intent.",
+        "Language is NOT by itself an escalation reason. A non-English message with clear intent is escalated or auto-handled on the same policy as any other.",
+        "If a non-English message has sufficiently clear intent, classify the intent normally.",
+        "If intent cannot be determined reliably - for language reasons or any other - the intent is other_unclear, and language records why.",
+        "'unclear' is for mixed, transliterated or too-short-to-tell cases."
+      ]
+    },
+    "social_nonrequest_indicator": {
+      "values": [
+        true,
+        false
+      ],
+      "rationale": "Politeness co-occurs with real requests constantly, so praise language must be recordable without changing the intent."
+    }
+  },
+  "rejected": [
+    {
+      "name": "help_need_asap",
+      "reason": "Urgency register, not a topic. Split into two near-identical clusters at k=10; underlying content was account and billing issues. Represented via the urgency attribute."
+    },
+    {
+      "name": "explicit_question",
+      "reason": "Tested and rejected outright: 41.97% prevalence but reply-DM 34.3% vs 38.8% when absent. No operational signal. Not an intent and not an attribute."
+    }
+  ],
+  "boundary_rules": [
+    {
+      "id": "BR-1",
+      "pair": "billing vs account_access",
+      "test": "Can the customer get into the account? No -> account_access. Yes, with a disputed charge -> billing_subscription. The token 'account' is not evidence; access failure is."
+    },
+    {
+      "id": "BR-2",
+      "pair": "plans vs billing",
+      "test": "Has money already moved incorrectly? Yes -> billing_subscription. No -> plans_eligibility."
+    },
+    {
+      "id": "BR-3",
+      "pair": "content_availability vs playback",
+      "test": "Does the content exist in the catalogue for this market? No -> content_availability. Yes but won't play -> playback_playlist."
+    },
+    {
+      "id": "BR-4",
+      "pair": "playback vs app_device",
+      "test": "Where would the fix live? Works on one surface and fails on another -> app_device_technical. Fails everywhere, or concerns music logic (shuffle, queue, offline, playlists) -> playback_playlist. Naming a device is not sufficient. Device, OS and app names are context, not evidence: they locate the symptom and never by themselves assign the intent. If no client-specific surface is mentioned, resolve the case under the relevant non-device rule rather than assigning app_device_technical merely from generic wording."
+    },
+    {
+      "id": "BR-5",
+      "pair": "social/praise vs an actual support request",
+      "test": "Is anything actionable present? Any request -> that request's intent with social_nonrequest_indicator=true. Nothing actionable -> other_unclear (social_praise was removed as an intent in 0.2.0; the indicator attribute carries the praise signal)."
+    },
+    {
+      "id": "BR-6",
+      "pair": "feature_feedback vs malfunction",
+      "test": "Does the capability exist? EXISTING capability malfunctioning -> the matching technical intent (app_device_technical for client/OS/device faults, playback_playlist for music logic). Capability DOES NOT EXIST, or the customer is asking for it to be built, added, restored or extended to a new device/platform -> product_feature_feedback. A request for support on a device or OS version that is not yet supported is a request for a capability that does not exist, so it is product_feature_feedback, NOT app_device_technical. Test: 'any idea when you'll update the app to support the iphone x' -> product_feature_feedback. 'your latest update doesn't work on iphone 5 with ios 10.3.3, endless app load screen' -> app_device_technical (it shipped and it is broken)."
+    },
+    {
+      "id": "BR-7",
+      "pair": "market availability",
+      "test": "Plain question about service in a country -> content_availability. Framed as advocacy or campaign -> product_feature_feedback."
+    },
+    {
+      "id": "BR-8",
+      "pair": "other_unclear vs known intent",
+      "test": "other_unclear requires that a careful reader cannot identify the issue, not that it is hard. Multi-issue messages take the issue led with."
+    },
+    {
+      "id": "BR-9",
+      "pair": "multi-intent tie-break",
+      "test": "Prefer the intent with independent escalation authority: account_access > billing_subscription > other_unclear > all others."
+    },
+    {
+      "id": "BR-10",
+      "pair": "topic without actionable request",
+      "test": "If the customer only names a topic and expresses no request, problem, question or actionable need, the intent is other_unclear. Do NOT infer the issue they probably meant. Example: 'question about billing.' -> other_unclear, not billing_subscription."
+    },
+    {
+      "id": "BR-11",
+      "pair": "account_access vs app_device_technical",
+      "test": "If the customer cannot authenticate, is unexpectedly logged out, cannot reset a password, or the account is compromised, classify as account_access regardless of any phone, OS or app context. Device/OS/app mentions describe where the failure occurred, not what failed. app_device_technical applies only when authentication is not the underlying issue."
+    }
+  ],
+  "falsification_criteria": [
+    "social_praise or product_feature_feedback below 4% in the pilot -> fold in",
+    "other_unclear above ~15% -> taxonomy inadequate, revise before golden-set labelling",
+    "billing <-> plans confusion above 25% with indistinguishable escalation outcomes -> merge",
+    "playback <-> app_device confusion above 25% -> do NOT merge; sharpen BR-4 and re-pilot"
+  ],
+  "coverage_gaps": [
+    {
+      "domain": "artist / music distribution (creator-side)",
+      "handling": "Classify as other_unclear for now. No creator or artist_distribution intent is being added.",
+      "evidence": "Pilot item P007: a parent asking how to upload their child's music to Spotify. Not content_availability (no existing content requested) and not product_feature_feedback (the capability exists, it is simply not a support channel).",
+      "revision_trigger": "If the pilot surfaces multiple recurring examples of this domain, flag for possible taxonomy revision after the pilot - not during it.",
+      "status": "open"
+    },
+    {
+      "domain": "social-only praise",
+      "handling": "Folded into other_unclear in 0.2.0. social_nonrequest_indicator remains an attribute and carries the signal.",
+      "evidence": "The class drew exactly one pilot label (P001, 'love me'), which on review is not praise at all - most likely a song-title request, retrieved because the praise seed matched the bare word 'love'. Zero valid instances in 40 items.",
+      "revision_trigger": "If golden-set labelling shows a recurring pure-praise population needing distinct agent behaviour, reconsider.",
+      "status": "closed-for-now"
+    },
+    {
+      "domain": "entitlement-vs-client ambiguity (paid tier, unwanted ads/UI persisting)",
+      "handling": "No new intent. Annotator judgement, recorded as a known ambiguity; label by whichever reading dominates and note it.",
+      "evidence": "Pilot item P006: 'no matter how many times i hit the x it won't go away. i pay for premium... it takes up 1/4 of the screen.' Readable as an app UI defect (app_device_technical) or as an entitlement failure - paying for premium yet still served ads (billing_subscription). No boundary rule separates these.",
+      "revision_trigger": "If the golden set shows a recurring population, add a rule rather than an intent.",
+      "status": "open"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "0.1.0-proposed",
+      "change": "Initial 9-intent proposal with 4 attributes and BR-1..BR-9."
+    },
+    {
+      "version": "0.1.1-proposed",
+      "change": "Clarification pass before annotation. Added the language attribute; added BR-10 (topic without actionable request); recorded artist/music distribution as an open coverage gap. The 9 intent names and their core boundaries are UNCHANGED."
+    },
+    {
+      "version": "0.2.0-proposed",
+      "change": "Post-pilot revision. Removed social_praise (9 intents -> 8); social-only praise folds into other_unclear and social_nonrequest_indicator is retained as an attribute. Added BR-11 (account_access vs app_device_technical). Amended BR-4 (device/OS/app names are context, not evidence). Rewrote BR-5 to point at other_unclear. The remaining 8 intent names and definitions are otherwise unchanged."
+    },
+    {
+      "version": "0.2.1-proposed",
+      "change": "Pilot locked. BR-6 clarified: existing-capability malfunction -> technical intent; non-existent or requested capability (including support for a not-yet-supported device/OS) -> product_feature_feedback. Recorded the entitlement-vs-client ambiguity (P006) as an open coverage gap with no new intent. Six approved re-annotations applied to the pilot CSV; intents and attributes otherwise unchanged."
+    }
+  ]
+}
