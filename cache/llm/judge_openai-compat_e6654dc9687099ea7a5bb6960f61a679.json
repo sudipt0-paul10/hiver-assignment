@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 5, \"grounded\": 5, \"routing\": 4, \"tone\": 5, \"acceptable\": true, \"why\": \"Private routing is suitable for account access issues\"}", "input_tokens": 306, "output_tokens": 45, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

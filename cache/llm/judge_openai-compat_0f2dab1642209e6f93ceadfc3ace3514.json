@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 2, \"grounded\": 1, \"routing\": 2, \"tone\": 3, \"acceptable\": false, \"why\": \"Does not address the customer's issue with offline mode while traveling\"}", "input_tokens": 339, "output_tokens": 49, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

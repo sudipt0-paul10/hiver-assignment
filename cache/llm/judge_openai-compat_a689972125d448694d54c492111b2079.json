@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 2, \"routing\": 3, \"tone\": 2, \"acceptable\": false, \"why\": \"Does not address the customer's issue and instead asks for personal info\"}", "input_tokens": 324, "output_tokens": 50, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

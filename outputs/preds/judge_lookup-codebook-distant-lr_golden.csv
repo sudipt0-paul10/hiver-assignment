@@ -1,0 +1,201 @@
+id,route,parsed,addresses_need,grounded,routing,tone,acceptable,why,cached
+G001,handoff,True,5,5,5,5,True,"Apologizes for the customer's negative experience and offers a solution, while also setting boundaries and requesting more information.",True
+G002,handoff_fallback,True,5,5,5,5,True,"Apologizes for frustration and asks for more detail, a suitable response to a customer's emotional outburst",True
+G003,handoff_fallback,True,5,5,4,5,True,"Reply addresses the need, is grounded, and has a professional tone, but may not be the most direct route for the customer.",True
+G004,handoff,True,5,5,5,5,True,Apologizes for the frustration and offers a clear next step,True
+G005,handoff,True,5,5,5,5,True,clearly acknowledges the issue and asks for more detail,True
+G006,auto_reply,True,5,5,2,5,True,Does not provide a clear upgrade path or estimated time for the process,True
+G007,handoff,True,4,2,3,5,False,Does not address the customer's specific issue and lacks empathy.,True
+G008,handoff_fallback,True,5,5,4,5,True,"Reply addresses the customer's concern and asks for more detail, but doesn't provide a clear resolution or explanation of the issue.",True
+G009,handoff,True,5,5,5,5,True,Reply addresses the customer's issue and is professional and respectful.,True
+G010,auto_reply,True,4,5,3,5,True,Does not address the customer's specific concern about premium code policy and its impact on their decision to upgrade.,False
+G011,handoff,True,5,5,5,5,True,Reply addresses the customer's issue and is professional and respectful.,True
+G012,handoff,True,5,5,4,5,True,private channel is suitable for sensitive issue,True
+G013,handoff,True,4,5,5,5,True,"Apologizes for frustration and offers help, but doesn't address the specific issue or provide a solution directly.",True
+G014,handoff,True,5,5,2,5,True,Does not directly address the issue with PayPal payment,True
+G015,handoff,True,4,5,5,5,True,"Reply addresses the customer's concern and requests additional information, which is a good approach.",True
+G016,handoff,True,5,5,4,5,True,Private channel chosen to handle sensitive issue,True
+G017,handoff,True,5,5,5,5,True,Meets customer's need and is professional and respectful.,True
+G018,handoff,True,5,5,5,5,True,Reply addresses the customer's concern and asks for more detail in a professional tone.,True
+G019,handoff,True,5,5,5,5,True,"Apologizes for the customer's frustration and asks for more detail, which is a good way to address the issue without escalating or making a public statement.",True
+G020,handoff,True,5,5,2,5,True,Does not acknowledge the severity of the situation and uses a dismissive tone,True
+G021,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is consistent with the brand's tone and routing.,True
+G022,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G023,handoff,True,5,5,5,5,True,"Reply addresses the customer's issue and requests additional information, which is a common and appropriate next step.",True
+G024,handoff,True,5,5,4,5,True,"Reply addresses the need, is grounded, and has a good tone, but may not be the most efficient use of the public channel",True
+G025,handoff,True,5,5,5,5,True,meets customer concern and is professional,True
+G026,handoff,True,5,5,4,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G027,handoff,True,5,5,5,5,True,Reply addresses the customer's concern and asks for more detail without escalating or providing incorrect information.,True
+G028,auto_reply,True,5,5,5,5,True,Reply addresses the customer's specific question and provides relevant solutions.,False
+G029,handoff,True,5,5,2,5,True,Does not address the specific case number or request for help,True
+G030,auto_reply,True,5,5,5,5,True,"Reply addresses the customer's concern and asks for more information, which is a good next step.",False
+G031,handoff,True,5,5,5,5,True,neutralizes customer's anger and requests a more detailed conversation,True
+G032,auto_reply,True,5,5,5,5,True,meets customer request,False
+G033,handoff,True,5,5,4,5,True,"Reply addresses the need, is grounded, and has a professional tone, but may not be the most direct solution.",True
+G034,auto_reply,True,5,5,5,5,True,"The reply addresses the customer's need, is consistent with the brand's handling of similar cases, and has the right routing and tone.",True
+G035,handoff,True,5,5,5,5,True,Private channel chosen to handle sensitive issue,True
+G036,auto_reply,True,5,4,3,5,True,"Reply addresses the customer's issue and provides a clear next step, but lacks empathy and personal touch.",True
+G037,auto_reply,True,4,2,3,5,False,Does not address the customer's specific issue with the Android app and Sonos system.,False
+G038,handoff,True,5,5,2,5,True,Does not address the customer's request to change their password,True
+G039,handoff,True,5,5,5,5,True,Private channel chosen to address sensitive issue,True
+G040,auto_reply,True,5,4,3,5,True,"Reply addresses the customer's need and provides a helpful workaround, but lacks a personal touch and could benefit from a more empathetic tone.",False
+G041,handoff,True,5,2,3,4,False,Does not acknowledge the hijacking issue or offer a solution.,True
+G042,handoff,True,4,5,3,5,True,"Reply addresses the customer's need, is consistent with the brand's handling of similar cases, and has a professional tone, but may not provide a direct solution.",True
+G043,auto_reply,True,5,1,2,5,False,inconsistent with brand's handling of similar requests,False
+G044,handoff,True,5,5,5,5,True,Reply addresses the customer's concern and requests additional information in a professional manner.,True
+G045,handoff,True,4,5,3,5,True,Does not address the customer's concern about a fake verified account,True
+G046,handoff,True,5,5,5,5,True,clearly addresses the customer's question and request for more information,True
+G047,handoff,True,5,5,5,5,True,Apologizes for the frustration and asks for more detail without escalating or providing a solution,True
+G048,handoff,True,5,5,5,5,True,"Reply addresses the customer's concern and asks for more detail, which is a good approach.",True
+G049,handoff,True,5,2,3,5,False,Does not acknowledge the customer's repeated requests and lack of resolution.,True
+G050,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G051,handoff,True,5,5,5,5,True,meets customer's request for help,True
+G052,handoff,True,5,5,5,5,True,Meets customer's request for more information,True
+G053,handoff,True,5,5,5,5,True,clearly addresses the customer's question and request for help,True
+G054,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G055,handoff_fallback,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G056,auto_reply,True,5,5,5,5,True,"Apologizes for the issue and offers a solution, but lacks empathy and understanding of the customer's frustration.",False
+G057,handoff,True,5,5,5,5,True,Reply addresses the customer's issue and is professional and respectful.,True
+G058,auto_reply,True,5,5,5,5,True,meets customer's request,False
+G059,handoff,True,5,5,5,5,True,Apologizes for frustration and offers a clear next step,True
+G060,handoff,True,5,5,5,5,True,Reply addresses the customer's issue and requests additional information in a professional manner.,True
+G061,handoff,True,4,2,3,5,False,Does not address the customer's specific issue with the charge being 2x,True
+G062,auto_reply,True,5,5,5,5,True,Clarifies the customer's question and asks for more information to investigate the issue.,False
+G063,auto_reply,True,5,2,3,5,True,Does not address the customer's specific issue with the renewal process.,True
+G064,handoff,True,5,5,5,5,True,"Reply addresses the customer's concern and asks for more detail, which is a good next step.",True
+G065,handoff,True,5,2,3,4,False,Does not address the customer's request to keep the trial going while closing the account.,True
+G066,handoff,True,5,5,5,5,True,clearly addresses the customer's concern and asks for necessary information,True
+G067,auto_reply,True,5,5,4,5,True,Reply addresses the customer's need and is consistent with the brand's tone and language.,False
+G068,handoff,True,5,5,5,5,True,Apologizes for the frustration and offers a clear next step,True
+G069,auto_reply,True,2,5,4,4,False,Does not address the customer's concern about playlist removals and premium service,False
+G070,handoff,True,5,5,5,5,True,Apologizes for frustration and offers a clear next step,True
+G071,auto_reply,True,5,5,5,5,True,Reply addresses the customer's question directly and professionally.,True
+G072,handoff_fallback,True,5,5,5,5,True,Reply addresses the customer's need and is consistent with the brand's handling of similar cases.,True
+G073,handoff,True,5,5,2,5,True,Does not address the customer's request to reset their account directly.,True
+G074,handoff,True,4,5,3,5,True,"Reply addresses the need, is grounded, and has a professional tone, but may not provide a direct ETA or escalate the issue properly.",True
+G075,handoff_fallback,True,5,5,5,5,True,"Reply addresses the customer's frustration and asks for more detail, which is a good approach to escalating the issue.",True
+G076,auto_reply,True,5,5,5,5,True,Reply addresses the customer's issue directly and professionally.,False
+G077,handoff,True,5,5,5,5,True,Meets customer's request for more information,True
+G078,handoff,True,4,2,3,5,False,Does not acknowledge the customer's concern about overpayment and instead dismisses the issue without offering a solution.,True
+G079,handoff_fallback,True,5,5,5,5,True,Reply addresses the customer's question and is professional and polite.,True
+G080,handoff_fallback,True,4,5,5,5,True,"Reply addresses the customer's question and request, and is professional and respectful.",True
+G081,auto_reply,True,5,5,5,5,True,Engages with the customer's frustration and invites them to provide more information.,False
+G082,handoff,True,5,5,4,5,True,Reply addresses the customer's issue and is professional and polite.,True
+G083,handoff,True,5,5,4,5,True,private channel chosen for sensitive issue,True
+G084,auto_reply,True,5,5,4,5,True,Reply addresses the customer's issue and is professional and respectful.,False
+G085,handoff,True,5,5,5,5,True,Reply addresses the customer's issue and is professional and polite.,True
+G086,auto_reply,True,2,5,5,5,True,Avoids escalating the issue and provides a clear alternative,False
+G087,handoff,True,5,5,5,5,True,clearly addresses the issue and provides a clear next step,True
+G088,handoff,True,5,2,3,5,True,Does not address the customer's current issue with migration of content,True
+G089,auto_reply,True,5,5,5,5,True,"Apologizes for the issue and asks for specific details to help resolve it, a good starting point for a support reply.",False
+G090,handoff,True,4,2,3,5,False,Does not acknowledge the customer's concern about not being notified about the premium renewal.,True
+G091,handoff,True,5,5,4,5,True,private issue handling,True
+G092,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and polite.,True
+G093,handoff,True,5,5,4,5,True,private channel chosen for sensitive issue,True
+G094,handoff,True,5,5,5,5,True,Reply addresses the customer's question directly and professionally.,True
+G095,handoff,True,5,5,4,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G096,handoff_fallback,True,5,5,5,5,True,meets customer's request for more information,True
+G097,handoff,True,5,5,4,5,True,"private issue, but clear next steps",True
+G098,handoff,True,5,5,5,5,True,clearly acknowledges the customer's concern and asks for more information in a polite manner,True
+G099,auto_reply,True,4,3,2,5,True,it addresses the customer's concerns but lacks specific details and a more empathetic tone,False
+G100,handoff,True,5,5,2,5,True,Does not address the specific issue with the premium account login problem on Android.,True
+G101,handoff,True,5,5,4,5,True,Provides a clear next step and acknowledges the customer's concern,True
+G102,auto_reply,True,5,5,5,5,True,Meets customer request and is professional and respectful.,True
+G103,handoff,True,4,2,3,5,False,Does not address the customer's concern about the premium account issue.,True
+G104,handoff,True,5,5,5,5,True,Meets customer's request for help,True
+G105,auto_reply,True,5,5,4,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G106,auto_reply,True,5,5,5,5,True,The reply addresses the customer's need and is consistent with the brand's handling of similar cases.,False
+G107,handoff,True,5,5,5,5,True,Apologizes for the customer's language and offers a solution without escalating the issue.,True
+G108,handoff,True,5,5,5,5,True,clearly addresses the customer's question and request for more information,True
+G109,handoff,True,5,5,4,5,True,"Apologizes for frustration and offers help, but doesn't address the specific issue with Discover Weekly",True
+G110,handoff_fallback,True,5,5,5,5,True,Reply addresses the customer's request and is professional and respectful.,True
+G111,handoff_fallback,True,5,5,5,5,True,"Apologizes for the customer's frustration and asks for more detail to help, rather than dismissing their issue or providing a generic solution.",True
+G112,handoff,True,5,5,5,5,True,"Apologizes for the customer's frustration and asks for more detail, a suitable response to a customer complaint.",True
+G113,handoff,True,5,4,3,5,True,"Reply addresses the customer's issue and provides a clear next step, but routing could be improved by acknowledging the customer's concern about not receiving a password reset email.",True
+G114,handoff,True,5,5,5,5,True,clearly acknowledges the issue and asks for more detail,True
+G115,handoff,True,4,5,3,5,True,"Reply addresses the customer's concern and requests more information, but doesn't acknowledge the customer's premium status or offer a solution.",True
+G116,auto_reply,True,5,5,2,5,True,Does not address the customer's specific issue with PayPal payment cycle,True
+G117,handoff,True,5,5,4,5,True,private channel not directly addressed the issue,True
+G118,handoff_fallback,True,5,5,5,5,True,Reply addresses the customer's question and is professional and respectful.,True
+G119,handoff,True,5,5,4,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G120,handoff,True,5,5,5,5,True,Reply addresses the customer's question and request for more information.,True
+G121,handoff,True,5,5,5,5,True,Apologizes for the customer's frustration and provides a clear next step,True
+G122,handoff,True,4,2,3,5,False,Does not address the customer's specific issue with the trial period and PayPal payment issue.,True
+G123,handoff,True,5,5,5,5,True,clearly acknowledges the customer's concern and requests more information,True
+G124,handoff,True,4,2,3,5,False,Does not address the customer's specific issue with the charge,True
+G125,auto_reply,True,5,5,5,5,True,Reply addresses the customer's issue directly and asks for necessary information to resolve the problem.,False
+G126,handoff,True,4,2,3,5,False,Does not address the customer's specific issue with their account charges and cancellation process.,True
+G127,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is consistent with the brand's tone and routing.,True
+G128,handoff,True,5,5,5,5,True,"Reply addresses the customer's concern and asks for more detail, which is a common and appropriate approach.",True
+G129,handoff,True,2,4,3,4,False,Does not address the customer's specific issue with the charges and refunds.,True
+G130,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G131,auto_reply,True,5,4,3,5,True,"Reply addresses the customer's concern and provides a plausible explanation, but lacks specific details and escalation information.",False
+G132,handoff,True,5,5,4,5,True,Private routing and professional tone address the customer's concern and request for update.,True
+G133,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G134,auto_reply,True,5,5,5,5,True,Reply addresses the customer's issue directly and professionally.,False
+G135,handoff,True,5,5,4,5,True,meets customer's need and is professional and respectful,True
+G136,auto_reply,True,5,5,5,5,True,"The reply addresses the customer's concern and acknowledges their frustration, providing a clear next step.",False
+G137,auto_reply,True,4,5,3,5,True,"Does not address the specific issue of playlist ordering, but is a good starting point for troubleshooting.",False
+G138,handoff,True,5,5,5,5,True,clearly acknowledges the customer's message and requests more detail,True
+G139,handoff,True,5,5,2,5,True,Does not address the customer's specific issue directly,True
+G140,handoff,True,5,5,5,5,True,Apologizes for the issue and offers help without escalating or making assumptions.,True
+G141,handoff,True,5,5,5,5,True,Reply addresses the customer's emotional tone and requests a more detailed DM for further assistance.,True
+G142,auto_reply,True,5,5,5,5,True,Reply addresses the customer's concern and provides a clear explanation.,False
+G143,handoff,True,5,5,5,5,True,meets customer's need and is professional and respectful,True
+G144,handoff,True,5,5,5,5,True,clearly acknowledges the issue and asks for more information,True
+G145,handoff,True,5,5,5,2,False,aggressive language,True
+G146,handoff,True,5,5,5,5,True,meets customer's request for information,True
+G147,handoff,True,2,5,3,4,False,Does not address the customer's concern about the charge being unnecessary,True
+G148,handoff,True,5,5,5,5,True,Reply addresses the customer's concern and asks for more detail in a professional tone.,True
+G149,handoff,True,5,5,4,5,True,private channel chosen for sensitive issue,True
+G150,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G151,handoff,True,4,2,3,5,False,Does not address the customer's specific issue with the charge,True
+G152,handoff,True,2,3,2,4,False,Does not address the customer's specific issue of being charged twice and having their account not updated to premium.,True
+G153,handoff,True,4,5,3,5,False,Does not address the customer's issue with the white screen loading problem.,True
+G154,handoff,True,5,5,5,5,True,Reply addresses the customer's concern and asks for additional information in a professional manner.,True
+G155,handoff,True,5,5,5,5,True,Acknowledges customer's positive sentiment and requests more detail to address their need.,True
+G156,handoff,True,4,5,2,5,True,Does not address the specific error 404 issue or provide a solution,True
+G157,handoff,True,2,3,1,4,False,Does not address the customer's specific issue and instead redirects to a generic solution.,True
+G158,handoff,True,4,5,5,5,True,Apologizes for the inconvenience and offers a clear next step,True
+G159,handoff_fallback,True,5,5,5,5,True,Reply addresses the customer's request and is professional and respectful.,True
+G160,handoff,True,4,5,5,5,True,Provides a clear request for more information without escalating the issue publicly.,True
+G161,handoff,True,5,5,5,5,True,Provides a clear request for additional information to address the customer's need.,True
+G162,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G163,handoff,True,5,5,5,5,True,meets customer's request,True
+G164,handoff,True,5,5,5,5,True,helpful and direct,True
+G165,auto_reply,True,2,1,2,1,False,Does not address the customer's issue and lacks empathy.,True
+G166,handoff,True,4,5,5,5,True,meets customer's request for help,True
+G167,handoff,True,5,5,5,5,True,Reply addresses the customer's question directly and professionally.,True
+G168,handoff,True,5,5,5,5,True,Private channel chosen to handle sensitive issue,True
+G169,handoff,True,5,5,5,5,True,Reply addresses the customer's issue and is professional and respectful.,True
+G170,handoff,True,5,5,4,5,True,Reply addresses the customer's confusion and directs them to the correct channel.,True
+G171,handoff,True,5,5,5,5,True,Reply addresses the customer's request and is professional and respectful.,True
+G172,handoff_fallback,True,5,5,3,5,True,"Reply addresses the need, is grounded, and has a good tone, but may not be the most efficient routing for this issue.",True
+G173,handoff,True,5,5,5,5,True,"Reply addresses the customer's issue and asks for more detail, which is a good approach.",True
+G174,handoff,True,4,2,3,5,False,Does not address the customer's specific issue with the charge,True
+G175,handoff,True,5,5,5,5,True,"Apologizes for the customer's tone and acknowledges their issue, while also setting a professional boundary",True
+G176,handoff,True,5,5,4,5,True,"Private channel routing is not ideal for this issue, but the rest of the reply is accurate and professional.",True
+G177,auto_reply,True,5,2,3,5,True,Reply addresses the need but lacks specific steps and context,False
+G178,handoff,True,5,5,5,5,True,Reply addresses the customer's concern and asks for additional information in a professional manner.,True
+G179,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is consistent with the brand's handling of similar cases.,True
+G180,auto_reply,True,5,5,2,5,True,Does not address the customer's issue directly,False
+G181,auto_reply,True,5,5,5,5,True,Reply addresses the customer's issue directly and professionally.,False
+G182,auto_reply,True,5,5,5,5,True,Reply addresses the customer's need and is consistent with the brand's handling of similar cases.,False
+G183,handoff,True,5,5,5,5,True,meets customer's request for more information,True
+G184,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G185,auto_reply,True,5,5,5,5,True,The reply addresses the customer's question directly and is consistent with the brand's handling of similar cases.,False
+G186,handoff,True,5,5,4,5,True,Private routing is suitable for account access issues,True
+G187,handoff,True,5,5,4,5,True,Provides a clear next step and acknowledges the customer's concern,True
+G188,auto_reply,True,2,5,3,1,False,Does not address the customer's concern about the album and instead provides a generic explanation for the Free service.,False
+G189,auto_reply,True,4,5,2,1,False,Reply does not acknowledge the customer's frustration or provide a solution to the issue.,True
+G190,handoff,True,5,5,4,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G191,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G192,auto_reply,True,5,5,5,5,True,Reply addresses the customer's specific issue and provides a clear next step.,False
+G193,handoff,True,5,2,3,4,False,Does not address the customer's concern about the bugged payment page.,True
+G194,handoff,True,5,5,5,5,True,Apologizes for frustration and offers help,True
+G195,handoff_fallback,True,5,5,5,5,True,meets customer's request for more information,True
+G196,handoff_fallback,True,5,5,5,5,True,Reply addresses the customer's request and is professional and respectful.,True
+G197,handoff,True,5,5,5,5,True,Private routing and professional tone address the customer's concern and request for help.,True
+G198,auto_reply,True,4,2,3,2,False,Does not address the customer's issue and instead asks for personal info,True
+G199,handoff,True,5,5,5,5,True,Reply addresses the customer's need and is professional and respectful.,True
+G200,handoff,True,4,2,3,5,False,Does not address the customer's forgotten password issue,True

@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 5, \"grounded\": 1, \"routing\": 2, \"tone\": 5, \"acceptable\": false, \"why\": \"Does not address the customer's request for adding a song to a playlist.\"}", "input_tokens": 321, "output_tokens": 52, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 2, \"routing\": 3, \"tone\": 5, \"acceptable\": false, \"why\": \"Does not acknowledge the customer's concern about not being notified about the premium renewal.\"}", "input_tokens": 319, "output_tokens": 53, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

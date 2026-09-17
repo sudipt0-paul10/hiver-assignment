@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 2, \"grounded\": 5, \"routing\": 3, \"tone\": 5, \"acceptable\": true, \"why\": \"Does not address the specific issue with the Release Radar playlist\"}", "input_tokens": 325, "output_tokens": 48, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

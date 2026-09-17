@@ -1,7 +1,9 @@
 # D12 — delayed blind re-label (test–retest)
 
-**Status: drawn and verified. The second pass is NOT due yet.**
-Built 2026-09-14 UTC, **earliest start 2026-09-19 UTC** (5-day delay).
+**Status: drawn and verified 9/9. The second pass is NOT due, and was NOT run.**
+Built 2026-09-14 UTC, **earliest start 2026-09-19 UTC** (5-day delay) — two days
+after the 2026-09-17 submission deadline. The gate was deliberately not moved;
+§5 explains why, and what it costs.
 
 ```bash
 python scripts/retest_sample.py --build     # already run; rebuilding would reshuffle the draw
@@ -111,7 +113,65 @@ Reading rules, fixed in advance so the result cannot be framed after the fact:
   edited. The golden set's first pass stays authoritative for every downstream
   metric; the second pass exists only to quantify how stable it is.
 
-## 5. What this does not do
+## 5. Deadline contingency — the gate was not moved
+
+The submission deadline is **2026-09-17**. The pre-registered earliest start for
+the second pass is **2026-09-19**. The two collide, and the gate was deliberately
+left where it was.
+
+The delay is not administrative padding; it is the entire mitigation for the
+limitation stated in §3. Recognition of a previously-seen tweet is the one threat
+test–retest cannot design away, and shortening the delay to fit a deadline would
+inflate the self-agreement figure by exactly the amount the delay exists to
+suppress — producing a *better-looking* ceiling that measures memory rather than
+label stability. A reliability ceiling obtained that way would be worse than no
+ceiling, because it would be quoted.
+
+The earliest-start date was recorded on **2026-09-14**, in
+`retest_manifest.json` (`earliest_start_utc`), before the collision was relevant.
+It has not been edited since; `--verify` check 8 re-computes the SHA-256 of the
+first-pass annotations recorded at draw time, so any retrospective tampering with
+the source is detectable, and the date itself sits in a manifest whose hashes are
+covered by the same check.
+
+**The cost, stated plainly:** no intra-annotator reliability ceiling exists at
+submission, so no agreement figure in this project — judge–human included — has
+the denominator that would make it interpretable. That is a real gap in the
+submission and it is reported as one in `docs/report.md` §8, not presented as a
+design choice that cost nothing.
+
+### 5.1 Verification evidence at submission
+
+`python scripts/retest_sample.py --verify`, run 2026-09-16:
+
+```
+=== D12 retest verification ===
+  [PASS] 1. row count  - 30
+  [PASS] 2. R ids unique and match the key
+  [PASS] 3. each R id maps to a distinct golden item  - 30 golden items
+  [PASS] 4. every mapped golden id exists in the 200
+  [PASS] 5. text byte-identical to the golden annotation  - 30/30
+  [PASS] 6. every annotation field is blank
+  [PASS] 7. blindness: no golden id and no first-pass label in the annotation CSV
+  [PASS] 8. the 200 annotations are unchanged since the retest was drawn
+  [PASS] 9. xlsx companion round-trips the text exactly
+  [WAIT] 10. delay gate - built 2026-09-14, earliest start 2026-09-19 (3 day(s) to go)
+        Not a failure: the artefact is ready, the second pass is not due yet.
+
+=== retest strata ===
+  retest:boundary                      3
+  retest:escalation_deviant            3
+  retest:low_confidence                7
+  retest:other_unclear_confident       5
+  retest:random                       12
+
+ALL CHECKS PASSED
+```
+
+Nine integrity and blindness checks pass. The tenth is the gate, and `[WAIT]` is
+the evidence that the procedure was pre-registered rather than abandoned.
+
+## 6. What this does not do
 
 - It does not give **inter**-annotator agreement. One person cannot produce that,
   and self-agreement is strictly the easier number — it bounds reliability from

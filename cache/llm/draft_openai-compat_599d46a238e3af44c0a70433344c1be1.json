@@ -1,0 +1,1 @@
+{"text": "@SpotifyCares We're sorry you're experiencing this issue. Removing songs can be frustrating. We'll let our devs know about the idea of a second prompt to confirm removals.", "input_tokens": 476, "output_tokens": 39, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

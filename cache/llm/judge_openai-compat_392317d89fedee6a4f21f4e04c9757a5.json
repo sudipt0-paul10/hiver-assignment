@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 2, \"routing\": 3, \"tone\": 5, \"acceptable\": false, \"why\": \"Does not address the customer's frustration or concern about the app's performance.\"}", "input_tokens": 325, "output_tokens": 52, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

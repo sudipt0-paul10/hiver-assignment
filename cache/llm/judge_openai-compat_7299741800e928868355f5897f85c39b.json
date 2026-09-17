@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 5, \"grounded\": 1, \"routing\": 2, \"tone\": 1, \"acceptable\": false, \"why\": \"Fabricated refund information and inappropriate routing\"}", "input_tokens": 344, "output_tokens": 44, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

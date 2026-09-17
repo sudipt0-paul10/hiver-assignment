@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 2, \"grounded\": 3, \"routing\": 2, \"tone\": 4, \"acceptable\": false, \"why\": \"Does not address the customer's specific issue of being charged twice and having their account not updated to premium.\"}", "input_tokens": 317, "output_tokens": 58, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

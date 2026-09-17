@@ -1,0 +1,1 @@
+{"text": "@Customer, our 6-month-free offer is tied to your FIDO account. Can you DM us your account's email address so we can check?", "input_tokens": 429, "output_tokens": 32, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 5, \"grounded\": 2, \"routing\": 3, \"tone\": 5, \"acceptable\": true, \"why\": \"Does not address the customer's specific issue with the renewal process.\"}", "input_tokens": 332, "output_tokens": 50, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

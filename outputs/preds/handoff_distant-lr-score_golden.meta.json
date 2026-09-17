@@ -1,0 +1,20 @@
+{
+  "policy": "distant-lr-score",
+  "split": "golden",
+  "n_escalated": 127,
+  "generation": "none - deterministic template lookup on the reason code",
+  "distinct_replies": 10,
+  "guardrail_failures": 0,
+  "templates_used": {
+    "HANDOFF-02-ambiguous": 76,
+    "HANDOFF-08-payment_dispute": 17,
+    "HANDOFF-01-account_access": 15,
+    "HANDOFF-05-high_frustration": 5,
+    "HANDOFF-11-security": 5,
+    "HANDOFF-04-failed_self_service": 3,
+    "HANDOFF-03-existing_case": 3,
+    "HANDOFF-07-out_of_scope": 1,
+    "HANDOFF-10-safety_abuse": 1,
+    "HANDOFF-06-legal_rights": 1
+  }
+}

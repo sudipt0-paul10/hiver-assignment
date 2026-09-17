@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 5, \"grounded\": 5, \"routing\": 5, \"tone\": 5, \"acceptable\": true, \"why\": \"Apologizes for the customer's tone and acknowledges their issue, while also setting a professional boundary\"}", "input_tokens": 297, "output_tokens": 56, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

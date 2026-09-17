@@ -1,0 +1,16 @@
+{
+  "policy": "keyword",
+  "split": "golden",
+  "n_escalated": 25,
+  "generation": "none - deterministic template lookup on the reason code",
+  "distinct_replies": 6,
+  "guardrail_failures": 0,
+  "templates_used": {
+    "HANDOFF-01-account_access": 10,
+    "HANDOFF-11-security": 6,
+    "HANDOFF-08-payment_dispute": 4,
+    "HANDOFF-03-existing_case": 3,
+    "HANDOFF-10-safety_abuse": 1,
+    "HANDOFF-06-legal_rights": 1
+  }
+}

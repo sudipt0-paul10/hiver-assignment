@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 2, \"routing\": 3, \"tone\": 5, \"acceptable\": false, \"why\": \"Does not address the customer's specific issue with their account charges and cancellation process.\"}", "input_tokens": 329, "output_tokens": 53, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

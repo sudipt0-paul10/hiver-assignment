@@ -1,0 +1,40 @@
+{
+  "classifier": "distant-lr",
+  "split": "golden",
+  "n": 200,
+  "saw_human_labels": false,
+  "construction": "TF-IDF + LR fitted on train openers weakly labelled by the seed rules",
+  "proxy_baseline": true,
+  "fit_report": {
+    "n_train": 14491,
+    "label_source": "seed rules (distant supervision) - NO human labels",
+    "weak_label_distribution": {
+      "other_unclear": 8864,
+      "playback_playlist": 1671,
+      "app_device_technical": 889,
+      "account_access": 787,
+      "billing_subscription": 749,
+      "content_availability": 549,
+      "plans_eligibility": 493,
+      "product_feature_feedback": 489
+    },
+    "features": 26076,
+    "tfidf_params": {
+      "ngram_range": [
+        1,
+        2
+      ],
+      "min_df": 2,
+      "sublinear_tf": true,
+      "strip_accents": "unicode"
+    },
+    "lr_params": {
+      "C": 1.0,
+      "max_iter": 2000,
+      "class_weight": "balanced",
+      "solver": "lbfgs",
+      "random_state": 0
+    },
+    "hyperparameter_search": "none - no labelled dev set exists (D23)"
+  }
+}

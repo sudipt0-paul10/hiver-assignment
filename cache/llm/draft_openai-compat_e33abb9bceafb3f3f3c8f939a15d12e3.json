@@ -1,0 +1,1 @@
+{"text": "@SpotifyCares Can you tell us which album is causing playback issues? Try clicking on the album in the web player & copy the album link to help us troubleshoot", "input_tokens": 453, "output_tokens": 36, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

@@ -1,0 +1,22 @@
+{
+  "construction": "codebook escalation_role applied to the 'distant-lr' predicted intent; no human label enters either stage",
+  "intent_source": "distant-lr",
+  "uses_human_labels": false,
+  "reason_stage": {
+    "construction": "deterministic ordered rules over MUST proxies, a PII pattern, the DM-follow-up marker, the failed-self-service proxy, an anger pattern and an out-of-scope pattern; ties broken by BR-9 (independent authority first). No golden label is read and nothing was tuned.",
+    "rule_activations": {
+      "fallback:ambiguous": 88,
+      "fallback:payment_dispute": 13,
+      "rule:account_access": 10,
+      "rule:high_frustration": 6,
+      "rule:security": 6,
+      "rule:failed_self_service": 3,
+      "rule:existing_case": 3,
+      "rule:out_of_scope": 1,
+      "fallback:account_access": 5,
+      "rule:safety_abuse": 1,
+      "rule:payment_dispute": 4,
+      "rule:legal_rights": 1
+    }
+  }
+}

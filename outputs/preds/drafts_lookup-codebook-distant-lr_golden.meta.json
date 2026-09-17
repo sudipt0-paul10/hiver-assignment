@@ -1,0 +1,33 @@
+{
+  "policy": "lookup-codebook-distant-lr",
+  "split": "golden",
+  "is_mock": false,
+  "provider": "openai-compat",
+  "model": "llama3.2:3b",
+  "params": {
+    "max_tokens": 200,
+    "temperature": 0.0
+  },
+  "k_evidence": 3,
+  "n_items": 200,
+  "n_auto_reply": 43,
+  "n_handoff": 141,
+  "n_guardrail_fallback": 16,
+  "usage": {
+    "calls": 59,
+    "cached": 59,
+    "billed_calls": 0,
+    "usd": 0.0,
+    "any_mock": false,
+    "by_provider": {
+      "openai-compat:llama3.2:3b": {
+        "calls": 59,
+        "cached": 59,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "usd": 0.0,
+        "is_mock": false
+      }
+    }
+  }
+}

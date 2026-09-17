@@ -28,5 +28,11 @@ For non-obvious changes, explain evidence, assumptions, and rationale. Do not in
 
 ChatGPT is an independent technical reviewer. Important architecture/evaluation decisions may be brought to ChatGPT for review before implementation.
 
-## Current state
-The repository started empty. Git hygiene has been established with `.gitignore` and `.gitattributes`. Build from the actual project state; do not assume an implementation already exists.
+## Current state (2026-09-17, submission)
+The pipeline is built and run end to end: 200-item golden set, retrieval with measured leakage controls,
+`rule` / `distant-lr` / `llm` intent classifiers, escalation policy and reason codes, deterministic handoff,
+drafting with guardrails, LLM judge and corruption probes. The LLM stages ran on a local `llama3.2:3b`
+server; **$0.00 of API spend, 0 billed calls**, and the real-provider cache is committed under `cache/llm/`.
+Read `docs/report.md` for results and `docs/pipeline.md` for status. Two things are deliberately not done:
+the D12 retest second pass (pre-registered for 2026-09-19, after the deadline) and D11's human reply-quality
+ratings (no judge–human agreement is claimed anywhere). Inspect the actual state before assuming anything.

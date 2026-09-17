@@ -1,14 +1,44 @@
 # Architecture & Evaluation Decisions
 
 **STATUS: REVISED 2026-09-12** against the official `twcs/twcs.csv`.
+**Submission status appended 2026-09-17** to D20 (outcome) and D22 (resolved);
+D24 added to give `docs/pipeline.md` §7 a real target. No earlier decision text
+was rewritten.
 
 Decisions marked **[MEASURED]** rest on evidence in `docs/profile.md`, which is
 reproducible via `scripts/profile.py`. Decisions marked **[POLICY]** are choices
 we are making, not facts we discovered. Decisions marked **[OPEN]** are not yet
-settled.
+settled; **[RESOLVED]** marks one that was open and has since been closed, with
+the closing note appended rather than replacing the original.
 
-Numbered for reuse as the assignment's required decision log (10–15 non-obvious
-decisions with rationale).
+---
+
+## The assignment's decision log — the 13 that matter
+
+The assignment asks for **10–15 non-obvious decisions with rationale**. This file
+holds 24, because it doubles as the project's full working record. The thirteen
+below are the submission log; the rest are kept as history and as the evidence
+trail behind them. Nothing has been deleted.
+
+| # | Decision | Why it is on this list |
+|---|---|---|
+| **D1** | Brand: SpotifyCares | Chose the *harder* brand on measured escalation density, giving up a cleaner drafting corpus — the trade-off is stated, not hidden |
+| **D3** | Headline = unsafe-auto at matched coverage | Defines what "working" means, and makes a 0%-coverage system score as useless as it is |
+| **D6** | Golden set: stratified, weights recorded | Core drawn first, so the population estimate is a genuine SRS rather than a residue |
+| **D7** | Paired tests and intervals | Wilson on every proportion, exact McNemar on every comparison; the test window is touched once |
+| **D9** | Escalation is our policy, not observed behaviour | TWCS has no escalation ground truth; conflating DM-deflection with correctness is the central trap in this dataset |
+| **D11** | Judge validation: human ratings **plus** corruption probes | Correlation alone cannot qualify a judge; planted defects can disqualify one |
+| **D12** | ~30 test–retest items for intra-annotator reliability | Converts an uninterpretable agreement number into an interpretable one — and its pre-registered delay was honoured against the deadline |
+| **D14** | Baselines: trivial and simple, both mandatory | A system that cannot beat a regex has not been shown to work |
+| **D15** | Complexity must earn its place | The ablation bar that stopped embeddings, and that the LLM classifier then failed on its own terms |
+| **D18** | Temporal split on thread-opener date | 0 threads straddle a boundary, by construction rather than by inspection |
+| **D20** | Recorded limitation: same-family judge bias | Anticipated a real threat; §5 below records that the shipped run was *worse* than the plan, not better |
+| **D22** | Reproducibility cache | Resolved: the real-provider cache ships, so a grader reproduces LLM numbers with no key and no model |
+| **D23** | No human-labelled training set | The constraint that makes a conventional supervised baseline impossible — stated instead of quietly fabricated |
+
+The remaining eleven (D2, D4, D5, D8, D10, D13, D16, D17, D19, D21, D24) record
+metric mechanics, taxonomy construction, normalisation, budget and tooling. They
+are referenced throughout the report and are preserved in full below.
 
 ---
 
@@ -394,6 +424,17 @@ Mitigations: a different (stronger) model tier for judging than for generation;
 D11's human-agreement validation; D11's corruption probes. Disclosed explicitly
 as a limitation in the report rather than left for a reviewer to notice.
 
+**Status at submission (2026-09-17): the outcome was worse than this plan, and
+that is recorded rather than softened.** The run that shipped used the free local
+route (D24), not Anthropic, so the cost argument that motivated a tier gap fell
+away — and so did the tier gap. `llama3.2:3b` drafted the replies and
+`llama3.2:3b` judged them: not merely the same family, **the same model marking
+its own work**, which it approved at 86.0%. Of the three mitigations named above,
+one was not achieved and one (human agreement) was not delivered. **The
+corruption probes are the only mitigation that actually ran**, which is why they
+carry the whole of D11's weight in `docs/report.md` §5.6 and §7. D20 stays
+**[OPEN]**.
+
 ## D21 — Human pilot before the golden set **[POLICY]**
 
 ~40 blind items labelled before any golden-set labelling. Label intent,
@@ -407,7 +448,7 @@ codebook is locked. Never adjust human labels to improve a system's numbers.
 Pilot prerequisites are brand lock (D1), a drafted codebook and a sampling
 script — not a working agent. **Gated on explicit go-ahead.**
 
-## D22 — Reproducibility cache **[OPEN]**
+## D22 — Reproducibility cache **[RESOLVED 2026-09-17]**
 
 The assignment requires headline results reproducible in <15 minutes from a
 clean clone. A grader without an API key can only achieve that if the LLM
@@ -417,6 +458,17 @@ generated caches.
 Currently ignored, with the carve-out documented in `.gitignore`
 (`!cache/llm/`). Must be settled before submission: either commit a small
 pinned cache, or provide a subsample path that runs inside the budget.
+
+**Resolved 2026-09-17: the cache ships.** `.gitignore` carries `cache/*`,
+`!cache/llm/`, `cache/llm/*_mock_*` — so **real-provider responses are committed
+and mock responses are not**. The pattern is `cache/*` rather than `cache/`
+because git will not descend into an excluded directory, so a negation inside one
+would never match. The committed entries cover the intent classifier, the
+drafter, the judge and the corruption probes, all `openai-compat:llama3.2:3b`.
+A grader with no key, no model and no network replays them and reproduces every
+LLM number in the report. Mock entries are excluded deliberately: they are
+deterministic, rebuild in seconds, and committing them would put stub output one
+filename away from the real artefacts.
 
 ## D23 — No human-labelled training set: every classifier is labelled by construction **[POLICY]**
 
@@ -469,6 +521,44 @@ sweep is run. This is a limitation, not a tuning result, and is recorded as such
 
 **Rejected: cross-validation inside the golden set.** Fitting and reporting on the
 same 200 items contaminates the only evaluation the project has.
+
+## D24 — Provider abstraction: mock by default, local model for real output **[POLICY]**
+
+*Recorded 2026-09-17, documenting a decision taken on 2026-09-15 and implemented
+in `scripts/providers.py`. `docs/pipeline.md` §7 already described it and cited
+"D24"; this entry is that citation's target.*
+
+Every model call goes through one `complete(prompt, message, params) -> Response`
+interface with three implementations: **`mock`** (default, offline, free,
+deterministic stub), **`openai-compat`** (any self-hosted OpenAI-compatible
+server, free) and **`anthropic`** (billed, gated behind `--allow-api`).
+
+**Why.** D19 caps spend at ₹0–500. The Anthropic plan in `docs/pipeline.md` §6.1
+fit that cap but still required credits the project did not have. Abstracting the
+provider let the same code path produce real output from a locally-served model
+at zero cost, and let the repository stay runnable end-to-end for a grader with no
+credentials at all. **Outcome: $0.00 spent; every stage metadata file records
+`billed_calls: 0`.**
+
+**Why the default is a stub and not a local model.** The machine the refactor was
+written on could not fetch weights (2 cores, 3.9 GB RAM, no GPU, and an egress
+allowlist blocking `huggingface.co` and `ollama.com` — measured). A default that
+requires weights would make the repository unrunnable on that machine; a stub
+default makes it runnable everywhere and puts the real path one flag away.
+
+**Three barriers stop stub output being read as a result**, because the risk this
+decision creates is precisely that someone quotes the mock: every response is
+stamped `is_mock`; every artefact gets a `_mock` filename suffix and
+`is_mock: true` in its metadata; and `evaluate.py` prints mock rows under a
+`[MOCK PROVIDER — NOT A RESULT]` banner and excludes them from McNemar. The cache
+key includes the provider, so a mock entry and a real entry can never collide.
+
+**The cost of this decision, and it is not small.** Choosing a free local route
+meant choosing a 3B model. `docs/report.md` §5.1 shows that model losing to a
+regex on intent, and §7 shows the same model judging its own drafts because there
+was no second model to judge with — the tier gap D20 asked for. A budgeted
+two-model run would have been the better experiment; this was the affordable one,
+and the report reads its results accordingly.
 
 ---
 

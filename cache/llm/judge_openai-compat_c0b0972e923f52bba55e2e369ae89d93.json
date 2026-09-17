@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 5, \"grounded\": 5, \"routing\": 4, \"tone\": 5, \"acceptable\": true, \"why\": \"Private routing and professional tone address the customer's concern and request for update.\"}", "input_tokens": 313, "output_tokens": 52, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

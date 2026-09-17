@@ -1,0 +1,1 @@
+{"text": "@SpotifyCares Notifications on your phone when listening to Spotify on TV are not supposed to happen. Can you try resetting your notification settings on your TV and phone?", "input_tokens": 433, "output_tokens": 35, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

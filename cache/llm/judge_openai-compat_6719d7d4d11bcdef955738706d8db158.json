@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 2, \"routing\": 3, \"tone\": 5, \"acceptable\": false, \"why\": \"Does not address the customer's concern about the premium account issue.\"}", "input_tokens": 306, "output_tokens": 50, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

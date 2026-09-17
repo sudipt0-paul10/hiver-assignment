@@ -109,8 +109,24 @@ def render(reason: str) -> str:
     return TEMPLATES[reason]
 
 
-def guardrails(text: str, customer_text: str | None = None) -> dict[str, bool]:
-    """Every check returns True when the reply is SAFE on that dimension."""
+def guardrails(text: str, customer_text: str | None = None, *,
+               require_private_routing: bool = True) -> dict[str, bool]:
+    """Every check returns True when the reply is SAFE on that dimension.
+
+    ``require_private_routing`` exists because this set is shared by two paths
+    that have opposite obligations, and applying it unconditionally was a bug:
+
+    * a HANDOFF reply must route to a private channel - that is what a handoff
+      IS, so the check stays on by default and every existing caller is unchanged;
+    * an AUTO_OK draft is by definition a reply that can be answered in public,
+      so demanding a DM contradicts both the policy decision made upstream and
+      the drafting prompt, which makes a DM conditional ("If the issue genuinely
+      cannot be resolved with a public reply ... ask them to send a DM").
+
+    The check itself is untouched; only whether this caller is subject to it.
+    Nothing else is relaxed, and the escalation decision is made upstream and is
+    unaffected either way.
+    """
     low = text.lower()
     checks = {
         "no_url": not URL_RE.search(text),
@@ -118,9 +134,10 @@ def guardrails(text: str, customer_text: str | None = None) -> dict[str, bool]:
         "no_unfilled_placeholder": not PLACEHOLDER.search(text),
         "within_length_cap": len(text) <= MAX_CHARS,
         "no_outcome_promise": not any(b in low for b in BANNED),
-        "routes_to_private_channel": bool(DM_HINT.search(text)),
         "non_empty": bool(text.strip()),
     }
+    if require_private_routing:
+        checks["routes_to_private_channel"] = bool(DM_HINT.search(text))
     if customer_text is not None:
         # a 6-word window of the customer's message must not appear in the reply
         toks = customer_text.split()

@@ -254,8 +254,11 @@ deliberate delay. It is not a nice-to-have:
   rate sitting on the falsification line, and 15 low-confidence items all in that
   one class. A retest measures exactly that instability.
 
-**Drawn and documented: `docs/retest.md`** — 30 items, seed 1212, earliest start
-2026-09-19. What follows was the recommendation and is now the procedure.
+**Drawn and documented: `docs/retest.md`** — 30 items, seed 1212, verified 9/9,
+earliest start 2026-09-19. **That date falls after the 2026-09-17 submission
+deadline and was deliberately not moved**, so the second pass did not run and no
+reliability ceiling exists at submission (`docs/retest.md` §5). What follows was
+the recommendation and is now the procedure.
 
 **Recommendation: do it, and start the clock now.** Draw the ~30 items (stratified
 to over-sample `other_unclear` and the low-confidence rows), then re-label after a

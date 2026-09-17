@@ -1,0 +1,7 @@
+{
+  "classifier": "rule",
+  "split": "golden",
+  "n": 200,
+  "saw_human_labels": false,
+  "construction": "first-match-wins seed regex written against train text before any labelling; nothing is fitted"
+}

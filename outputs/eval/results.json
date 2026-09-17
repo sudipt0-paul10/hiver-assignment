@@ -1,0 +1,2662 @@
+{
+  "intent": {
+    "distant-lr": {
+      "construction": "TF-IDF + LR fitted on train openers weakly labelled by the seed rules",
+      "proxy_baseline": true,
+      "accuracy_full": {
+        "correct": 100,
+        "n": 200
+      },
+      "accuracy_core": {
+        "correct": 68,
+        "n": 160
+      },
+      "accuracy_targeted": {
+        "correct": 32,
+        "n": 40
+      },
+      "accuracy_valid-gold-only": {
+        "correct": 100,
+        "n": 198
+      },
+      "macro_f1_full": 0.5201865798114466,
+      "per_class": {
+        "account_access": {
+          "support": 33,
+          "precision": 0.9444444444444444,
+          "recall": 0.5151515151515151,
+          "f1": 0.6666666666666666
+        },
+        "billing_subscription": {
+          "support": 33,
+          "precision": 0.8947368421052632,
+          "recall": 0.5151515151515151,
+          "f1": 0.6538461538461537
+        },
+        "plans_eligibility": {
+          "support": 17,
+          "precision": 0.9,
+          "recall": 0.5294117647058824,
+          "f1": 0.6666666666666667
+        },
+        "content_availability": {
+          "support": 13,
+          "precision": 0.5714285714285714,
+          "recall": 0.3076923076923077,
+          "f1": 0.4
+        },
+        "playback_playlist": {
+          "support": 18,
+          "precision": 0.5,
+          "recall": 0.3888888888888889,
+          "f1": 0.43750000000000006
+        },
+        "app_device_technical": {
+          "support": 34,
+          "precision": 0.7333333333333333,
+          "recall": 0.3235294117647059,
+          "f1": 0.4489795918367347
+        },
+        "product_feature_feedback": {
+          "support": 20,
+          "precision": 0.6153846153846154,
+          "recall": 0.4,
+          "f1": 0.4848484848484849
+        },
+        "other_unclear": {
+          "support": 30,
+          "precision": 0.25961538461538464,
+          "recall": 0.9,
+          "f1": 0.40298507462686567
+        }
+      },
+      "top_confusions": [
+        {
+          "gold": "app_device_technical",
+          "pred": "other_unclear",
+          "n": 19
+        },
+        {
+          "gold": "account_access",
+          "pred": "other_unclear",
+          "n": 13
+        },
+        {
+          "gold": "billing_subscription",
+          "pred": "other_unclear",
+          "n": 12
+        },
+        {
+          "gold": "content_availability",
+          "pred": "other_unclear",
+          "n": 8
+        },
+        {
+          "gold": "playback_playlist",
+          "pred": "other_unclear",
+          "n": 8
+        },
+        {
+          "gold": "product_feature_feedback",
+          "pred": "other_unclear",
+          "n": 8
+        },
+        {
+          "gold": "plans_eligibility",
+          "pred": "other_unclear",
+          "n": 7
+        },
+        {
+          "gold": "app_device_technical",
+          "pred": "playback_playlist",
+          "n": 4
+        },
+        {
+          "gold": "playback_playlist",
+          "pred": "product_feature_feedback",
+          "n": 2
+        },
+        {
+          "gold": "account_access",
+          "pred": "billing_subscription",
+          "n": 2
+        }
+      ],
+      "accuracy_by_stratum_family": {
+        "boundary": {
+          "correct": 8,
+          "n": 10
+        },
+        "core": {
+          "correct": 68,
+          "n": 160
+        },
+        "escalation": {
+          "correct": 8,
+          "n": 12
+        },
+        "targeted": {
+          "correct": 12,
+          "n": 14
+        },
+        "vague_unclear": {
+          "correct": 4,
+          "n": 4
+        }
+      },
+      "is_mock": false,
+      "provider": null
+    },
+    "llm": {
+      "construction": "prompted with the locked codebook; no human labels in the prompt",
+      "proxy_baseline": false,
+      "accuracy_full": {
+        "correct": 84,
+        "n": 200
+      },
+      "accuracy_core": {
+        "correct": 61,
+        "n": 160
+      },
+      "accuracy_targeted": {
+        "correct": 23,
+        "n": 40
+      },
+      "accuracy_valid-gold-only": {
+        "correct": 84,
+        "n": 198
+      },
+      "macro_f1_full": 0.3334120877005493,
+      "per_class": {
+        "account_access": {
+          "support": 33,
+          "precision": 0.4339622641509434,
+          "recall": 0.696969696969697,
+          "f1": 0.5348837209302327
+        },
+        "billing_subscription": {
+          "support": 33,
+          "precision": 0.7916666666666666,
+          "recall": 0.5757575757575758,
+          "f1": 0.6666666666666667
+        },
+        "plans_eligibility": {
+          "support": 17,
+          "precision": 1.0,
+          "recall": 0.29411764705882354,
+          "f1": 0.45454545454545453
+        },
+        "content_availability": {
+          "support": 13,
+          "precision": 0.3333333333333333,
+          "recall": 0.07692307692307693,
+          "f1": 0.125
+        },
+        "playback_playlist": {
+          "support": 18,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "app_device_technical": {
+          "support": 34,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "product_feature_feedback": {
+          "support": 20,
+          "precision": 0.34146341463414637,
+          "recall": 0.7,
+          "f1": 0.4590163934426229
+        },
+        "other_unclear": {
+          "support": 30,
+          "precision": 0.3013698630136986,
+          "recall": 0.7333333333333333,
+          "f1": 0.42718446601941745
+        }
+      },
+      "top_confusions": [
+        {
+          "gold": "app_device_technical",
+          "pred": "other_unclear",
+          "n": 16
+        },
+        {
+          "gold": "app_device_technical",
+          "pred": "account_access",
+          "n": 10
+        },
+        {
+          "gold": "billing_subscription",
+          "pred": "account_access",
+          "n": 9
+        },
+        {
+          "gold": "playback_playlist",
+          "pred": "product_feature_feedback",
+          "n": 8
+        },
+        {
+          "gold": "playback_playlist",
+          "pred": "other_unclear",
+          "n": 7
+        },
+        {
+          "gold": "account_access",
+          "pred": "other_unclear",
+          "n": 7
+        },
+        {
+          "gold": "content_availability",
+          "pred": "other_unclear",
+          "n": 7
+        },
+        {
+          "gold": "product_feature_feedback",
+          "pred": "other_unclear",
+          "n": 6
+        },
+        {
+          "gold": "app_device_technical",
+          "pred": "product_feature_feedback",
+          "n": 5
+        },
+        {
+          "gold": "plans_eligibility",
+          "pred": "account_access",
+          "n": 5
+        }
+      ],
+      "accuracy_by_stratum_family": {
+        "boundary": {
+          "correct": 5,
+          "n": 10
+        },
+        "core": {
+          "correct": 61,
+          "n": 160
+        },
+        "escalation": {
+          "correct": 8,
+          "n": 12
+        },
+        "targeted": {
+          "correct": 6,
+          "n": 14
+        },
+        "vague_unclear": {
+          "correct": 4,
+          "n": 4
+        }
+      },
+      "is_mock": false,
+      "provider": "openai-compat"
+    },
+    "llm_mock": {
+      "construction": "prompted with the locked codebook; no human labels in the prompt",
+      "proxy_baseline": false,
+      "accuracy_full": {
+        "correct": 34,
+        "n": 200
+      },
+      "accuracy_core": {
+        "correct": 28,
+        "n": 160
+      },
+      "accuracy_targeted": {
+        "correct": 6,
+        "n": 40
+      },
+      "accuracy_valid-gold-only": {
+        "correct": 34,
+        "n": 198
+      },
+      "macro_f1_full": 0.1621221583030465,
+      "per_class": {
+        "account_access": {
+          "support": 33,
+          "precision": 0.2222222222222222,
+          "recall": 0.12121212121212122,
+          "f1": 0.1568627450980392
+        },
+        "billing_subscription": {
+          "support": 33,
+          "precision": 0.2916666666666667,
+          "recall": 0.21212121212121213,
+          "f1": 0.2456140350877193
+        },
+        "plans_eligibility": {
+          "support": 17,
+          "precision": 0.13636363636363635,
+          "recall": 0.17647058823529413,
+          "f1": 0.15384615384615383
+        },
+        "content_availability": {
+          "support": 13,
+          "precision": 0.04,
+          "recall": 0.07692307692307693,
+          "f1": 0.052631578947368425
+        },
+        "playback_playlist": {
+          "support": 18,
+          "precision": 0.12,
+          "recall": 0.16666666666666666,
+          "f1": 0.13953488372093023
+        },
+        "app_device_technical": {
+          "support": 34,
+          "precision": 0.3076923076923077,
+          "recall": 0.23529411764705882,
+          "f1": 0.26666666666666666
+        },
+        "product_feature_feedback": {
+          "support": 20,
+          "precision": 0.06451612903225806,
+          "recall": 0.1,
+          "f1": 0.0784313725490196
+        },
+        "other_unclear": {
+          "support": 30,
+          "precision": 0.20689655172413793,
+          "recall": 0.2,
+          "f1": 0.20338983050847456
+        }
+      },
+      "top_confusions": [
+        {
+          "gold": "other_unclear",
+          "pred": "content_availability",
+          "n": 7
+        },
+        {
+          "gold": "content_availability",
+          "pred": "other_unclear",
+          "n": 6
+        },
+        {
+          "gold": "account_access",
+          "pred": "playback_playlist",
+          "n": 6
+        },
+        {
+          "gold": "account_access",
+          "pred": "product_feature_feedback",
+          "n": 6
+        },
+        {
+          "gold": "account_access",
+          "pred": "other_unclear",
+          "n": 6
+        },
+        {
+          "gold": "playback_playlist",
+          "pred": "product_feature_feedback",
+          "n": 6
+        },
+        {
+          "gold": "app_device_technical",
+          "pred": "playback_playlist",
+          "n": 6
+        },
+        {
+          "gold": "product_feature_feedback",
+          "pred": "billing_subscription",
+          "n": 6
+        },
+        {
+          "gold": "billing_subscription",
+          "pred": "plans_eligibility",
+          "n": 5
+        },
+        {
+          "gold": "app_device_technical",
+          "pred": "content_availability",
+          "n": 5
+        }
+      ],
+      "accuracy_by_stratum_family": {
+        "boundary": {
+          "correct": 2,
+          "n": 10
+        },
+        "core": {
+          "correct": 28,
+          "n": 160
+        },
+        "escalation": {
+          "correct": 3,
+          "n": 12
+        },
+        "targeted": {
+          "correct": 1,
+          "n": 14
+        },
+        "vague_unclear": {
+          "correct": 0,
+          "n": 4
+        }
+      },
+      "is_mock": true,
+      "provider": "mock"
+    },
+    "rule": {
+      "construction": "first-match-wins seed regex written against train text before any labelling; nothing is fitted",
+      "proxy_baseline": false,
+      "accuracy_full": {
+        "correct": 95,
+        "n": 200
+      },
+      "accuracy_core": {
+        "correct": 63,
+        "n": 160
+      },
+      "accuracy_targeted": {
+        "correct": 32,
+        "n": 40
+      },
+      "accuracy_valid-gold-only": {
+        "correct": 95,
+        "n": 198
+      },
+      "macro_f1_full": 0.47373404429502813,
+      "per_class": {
+        "account_access": {
+          "support": 33,
+          "precision": 0.9,
+          "recall": 0.5454545454545454,
+          "f1": 0.679245283018868
+        },
+        "billing_subscription": {
+          "support": 33,
+          "precision": 0.9375,
+          "recall": 0.45454545454545453,
+          "f1": 0.6122448979591837
+        },
+        "plans_eligibility": {
+          "support": 17,
+          "precision": 0.7777777777777778,
+          "recall": 0.4117647058823529,
+          "f1": 0.5384615384615384
+        },
+        "content_availability": {
+          "support": 13,
+          "precision": 0.42857142857142855,
+          "recall": 0.23076923076923078,
+          "f1": 0.3
+        },
+        "playback_playlist": {
+          "support": 18,
+          "precision": 0.5,
+          "recall": 0.2777777777777778,
+          "f1": 0.35714285714285715
+        },
+        "app_device_technical": {
+          "support": 34,
+          "precision": 0.8571428571428571,
+          "recall": 0.35294117647058826,
+          "f1": 0.5
+        },
+        "product_feature_feedback": {
+          "support": 20,
+          "precision": 0.6,
+          "recall": 0.3,
+          "f1": 0.4
+        },
+        "other_unclear": {
+          "support": 30,
+          "precision": 0.2543859649122807,
+          "recall": 0.9666666666666667,
+          "f1": 0.4027777777777778
+        }
+      },
+      "top_confusions": [
+        {
+          "gold": "app_device_technical",
+          "pred": "other_unclear",
+          "n": 19
+        },
+        {
+          "gold": "account_access",
+          "pred": "other_unclear",
+          "n": 15
+        },
+        {
+          "gold": "billing_subscription",
+          "pred": "other_unclear",
+          "n": 13
+        },
+        {
+          "gold": "product_feature_feedback",
+          "pred": "other_unclear",
+          "n": 10
+        },
+        {
+          "gold": "content_availability",
+          "pred": "other_unclear",
+          "n": 9
+        },
+        {
+          "gold": "playback_playlist",
+          "pred": "other_unclear",
+          "n": 9
+        },
+        {
+          "gold": "plans_eligibility",
+          "pred": "other_unclear",
+          "n": 8
+        },
+        {
+          "gold": "app_device_technical",
+          "pred": "playback_playlist",
+          "n": 3
+        },
+        {
+          "gold": "playback_playlist",
+          "pred": "product_feature_feedback",
+          "n": 2
+        },
+        {
+          "gold": "playback_playlist",
+          "pred": "content_availability",
+          "n": 2
+        }
+      ],
+      "accuracy_by_stratum_family": {
+        "boundary": {
+          "correct": 7,
+          "n": 10
+        },
+        "core": {
+          "correct": 63,
+          "n": 160
+        },
+        "escalation": {
+          "correct": 9,
+          "n": 12
+        },
+        "targeted": {
+          "correct": 12,
+          "n": 14
+        },
+        "vague_unclear": {
+          "correct": 4,
+          "n": 4
+        }
+      },
+      "is_mock": false,
+      "provider": null
+    },
+    "_mcnemar": {
+      "distant-lr|llm": {
+        "b": 41,
+        "c": 25,
+        "p_value": 0.06401750413722564
+      },
+      "distant-lr|rule": {
+        "b": 11,
+        "c": 6,
+        "p_value": 0.332305908203125
+      },
+      "llm|rule": {
+        "b": 27,
+        "c": 38,
+        "p_value": 0.21453919400817845
+      }
+    }
+  },
+  "escalation": {
+    "always-escalate": {
+      "coverage": 0.0,
+      "unsafe": 0,
+      "auto": 0,
+      "n": 200,
+      "construction": "constant ESCALATE; coverage 0% by definition",
+      "uses_human_labels": false
+    },
+    "distant-lr-score": {
+      "coverage": 0.365,
+      "unsafe": 16,
+      "auto": 73,
+      "n": 200,
+      "construction": "distant-supervision LR probability mass on the intents the codebook marks escalation_role=independent; threshold 0.5 fixed a priori, NOT tuned (no labelled dev set exists, D23)",
+      "uses_human_labels": false,
+      "risk_coverage": [
+        {
+          "threshold": 0.0,
+          "coverage": 0.0,
+          "unsafe_auto": 0.0,
+          "n_auto": 0,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.005968,
+          "coverage": 0.0,
+          "unsafe_auto": 0.0,
+          "n_auto": 0,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.017571,
+          "coverage": 0.005,
+          "unsafe_auto": 0.0,
+          "n_auto": 1,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.02692,
+          "coverage": 0.01,
+          "unsafe_auto": 0.0,
+          "n_auto": 2,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.028098,
+          "coverage": 0.015,
+          "unsafe_auto": 0.0,
+          "n_auto": 3,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.029447,
+          "coverage": 0.02,
+          "unsafe_auto": 0.0,
+          "n_auto": 4,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.042727,
+          "coverage": 0.025,
+          "unsafe_auto": 0.0,
+          "n_auto": 5,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.044078,
+          "coverage": 0.03,
+          "unsafe_auto": 0.0,
+          "n_auto": 6,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.046033,
+          "coverage": 0.035,
+          "unsafe_auto": 0.0,
+          "n_auto": 7,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.05188,
+          "coverage": 0.04,
+          "unsafe_auto": 0.0,
+          "n_auto": 8,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.05837,
+          "coverage": 0.045,
+          "unsafe_auto": 0.0,
+          "n_auto": 9,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.064959,
+          "coverage": 0.05,
+          "unsafe_auto": 0.0,
+          "n_auto": 10,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.069377,
+          "coverage": 0.055,
+          "unsafe_auto": 0.0,
+          "n_auto": 11,
+          "n_unsafe": 0
+        },
+        {
+          "threshold": 0.074935,
+          "coverage": 0.06,
+          "unsafe_auto": 0.08333333333333333,
+          "n_auto": 12,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.078044,
+          "coverage": 0.065,
+          "unsafe_auto": 0.07692307692307693,
+          "n_auto": 13,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.078182,
+          "coverage": 0.07,
+          "unsafe_auto": 0.07142857142857142,
+          "n_auto": 14,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.094879,
+          "coverage": 0.075,
+          "unsafe_auto": 0.06666666666666667,
+          "n_auto": 15,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.103098,
+          "coverage": 0.08,
+          "unsafe_auto": 0.0625,
+          "n_auto": 16,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.104672,
+          "coverage": 0.085,
+          "unsafe_auto": 0.058823529411764705,
+          "n_auto": 17,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.116059,
+          "coverage": 0.09,
+          "unsafe_auto": 0.05555555555555555,
+          "n_auto": 18,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.119417,
+          "coverage": 0.095,
+          "unsafe_auto": 0.05263157894736842,
+          "n_auto": 19,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.119636,
+          "coverage": 0.1,
+          "unsafe_auto": 0.05,
+          "n_auto": 20,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.122026,
+          "coverage": 0.105,
+          "unsafe_auto": 0.047619047619047616,
+          "n_auto": 21,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.133601,
+          "coverage": 0.11,
+          "unsafe_auto": 0.045454545454545456,
+          "n_auto": 22,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.134374,
+          "coverage": 0.115,
+          "unsafe_auto": 0.043478260869565216,
+          "n_auto": 23,
+          "n_unsafe": 1
+        },
+        {
+          "threshold": 0.135792,
+          "coverage": 0.12,
+          "unsafe_auto": 0.08333333333333333,
+          "n_auto": 24,
+          "n_unsafe": 2
+        },
+        {
+          "threshold": 0.138962,
+          "coverage": 0.125,
+          "unsafe_auto": 0.08,
+          "n_auto": 25,
+          "n_unsafe": 2
+        },
+        {
+          "threshold": 0.152117,
+          "coverage": 0.13,
+          "unsafe_auto": 0.07692307692307693,
+          "n_auto": 26,
+          "n_unsafe": 2
+        },
+        {
+          "threshold": 0.153047,
+          "coverage": 0.135,
+          "unsafe_auto": 0.07407407407407407,
+          "n_auto": 27,
+          "n_unsafe": 2
+        },
+        {
+          "threshold": 0.154487,
+          "coverage": 0.14,
+          "unsafe_auto": 0.10714285714285714,
+          "n_auto": 28,
+          "n_unsafe": 3
+        },
+        {
+          "threshold": 0.157,
+          "coverage": 0.145,
+          "unsafe_auto": 0.13793103448275862,
+          "n_auto": 29,
+          "n_unsafe": 4
+        },
+        {
+          "threshold": 0.157286,
+          "coverage": 0.15,
+          "unsafe_auto": 0.13333333333333333,
+          "n_auto": 30,
+          "n_unsafe": 4
+        },
+        {
+          "threshold": 0.164823,
+          "coverage": 0.155,
+          "unsafe_auto": 0.12903225806451613,
+          "n_auto": 31,
+          "n_unsafe": 4
+        },
+        {
+          "threshold": 0.176416,
+          "coverage": 0.16,
+          "unsafe_auto": 0.125,
+          "n_auto": 32,
+          "n_unsafe": 4
+        },
+        {
+          "threshold": 0.17756,
+          "coverage": 0.165,
+          "unsafe_auto": 0.12121212121212122,
+          "n_auto": 33,
+          "n_unsafe": 4
+        },
+        {
+          "threshold": 0.183333,
+          "coverage": 0.17,
+          "unsafe_auto": 0.11764705882352941,
+          "n_auto": 34,
+          "n_unsafe": 4
+        },
+        {
+          "threshold": 0.195856,
+          "coverage": 0.175,
+          "unsafe_auto": 0.14285714285714285,
+          "n_auto": 35,
+          "n_unsafe": 5
+        },
+        {
+          "threshold": 0.197466,
+          "coverage": 0.18,
+          "unsafe_auto": 0.16666666666666666,
+          "n_auto": 36,
+          "n_unsafe": 6
+        },
+        {
+          "threshold": 0.207156,
+          "coverage": 0.185,
+          "unsafe_auto": 0.16216216216216217,
+          "n_auto": 37,
+          "n_unsafe": 6
+        },
+        {
+          "threshold": 0.20913,
+          "coverage": 0.19,
+          "unsafe_auto": 0.15789473684210525,
+          "n_auto": 38,
+          "n_unsafe": 6
+        },
+        {
+          "threshold": 0.210141,
+          "coverage": 0.195,
+          "unsafe_auto": 0.1794871794871795,
+          "n_auto": 39,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.213514,
+          "coverage": 0.2,
+          "unsafe_auto": 0.175,
+          "n_auto": 40,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.216169,
+          "coverage": 0.205,
+          "unsafe_auto": 0.17073170731707318,
+          "n_auto": 41,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.235905,
+          "coverage": 0.21,
+          "unsafe_auto": 0.16666666666666666,
+          "n_auto": 42,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.243138,
+          "coverage": 0.215,
+          "unsafe_auto": 0.16279069767441862,
+          "n_auto": 43,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.252674,
+          "coverage": 0.22,
+          "unsafe_auto": 0.1590909090909091,
+          "n_auto": 44,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.256238,
+          "coverage": 0.225,
+          "unsafe_auto": 0.15555555555555556,
+          "n_auto": 45,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.269811,
+          "coverage": 0.23,
+          "unsafe_auto": 0.15217391304347827,
+          "n_auto": 46,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.28429,
+          "coverage": 0.235,
+          "unsafe_auto": 0.14893617021276595,
+          "n_auto": 47,
+          "n_unsafe": 7
+        },
+        {
+          "threshold": 0.302693,
+          "coverage": 0.24,
+          "unsafe_auto": 0.16666666666666666,
+          "n_auto": 48,
+          "n_unsafe": 8
+        },
+        {
+          "threshold": 0.308521,
+          "coverage": 0.245,
+          "unsafe_auto": 0.16326530612244897,
+          "n_auto": 49,
+          "n_unsafe": 8
+        },
+        {
+          "threshold": 0.309097,
+          "coverage": 0.25,
+          "unsafe_auto": 0.16,
+          "n_auto": 50,
+          "n_unsafe": 8
+        },
+        {
+          "threshold": 0.322577,
+          "coverage": 0.255,
+          "unsafe_auto": 0.17647058823529413,
+          "n_auto": 51,
+          "n_unsafe": 9
+        },
+        {
+          "threshold": 0.324771,
+          "coverage": 0.26,
+          "unsafe_auto": 0.19230769230769232,
+          "n_auto": 52,
+          "n_unsafe": 10
+        },
+        {
+          "threshold": 0.328498,
+          "coverage": 0.265,
+          "unsafe_auto": 0.20754716981132076,
+          "n_auto": 53,
+          "n_unsafe": 11
+        },
+        {
+          "threshold": 0.332159,
+          "coverage": 0.27,
+          "unsafe_auto": 0.2037037037037037,
+          "n_auto": 54,
+          "n_unsafe": 11
+        },
+        {
+          "threshold": 0.33758,
+          "coverage": 0.275,
+          "unsafe_auto": 0.2,
+          "n_auto": 55,
+          "n_unsafe": 11
+        },
+        {
+          "threshold": 0.346615,
+          "coverage": 0.28,
+          "unsafe_auto": 0.19642857142857142,
+          "n_auto": 56,
+          "n_unsafe": 11
+        },
+        {
+          "threshold": 0.348238,
+          "coverage": 0.285,
+          "unsafe_auto": 0.19298245614035087,
+          "n_auto": 57,
+          "n_unsafe": 11
+        },
+        {
+          "threshold": 0.39099,
+          "coverage": 0.29,
+          "unsafe_auto": 0.20689655172413793,
+          "n_auto": 58,
+          "n_unsafe": 12
+        },
+        {
+          "threshold": 0.395205,
+          "coverage": 0.295,
+          "unsafe_auto": 0.2033898305084746,
+          "n_auto": 59,
+          "n_unsafe": 12
+        },
+        {
+          "threshold": 0.41824,
+          "coverage": 0.3,
+          "unsafe_auto": 0.2,
+          "n_auto": 60,
+          "n_unsafe": 12
+        },
+        {
+          "threshold": 0.423298,
+          "coverage": 0.305,
+          "unsafe_auto": 0.19672131147540983,
+          "n_auto": 61,
+          "n_unsafe": 12
+        },
+        {
+          "threshold": 0.426026,
+          "coverage": 0.31,
+          "unsafe_auto": 0.1935483870967742,
+          "n_auto": 62,
+          "n_unsafe": 12
+        },
+        {
+          "threshold": 0.442347,
+          "coverage": 0.315,
+          "unsafe_auto": 0.20634920634920634,
+          "n_auto": 63,
+          "n_unsafe": 13
+        },
+        {
+          "threshold": 0.445223,
+          "coverage": 0.32,
+          "unsafe_auto": 0.21875,
+          "n_auto": 64,
+          "n_unsafe": 14
+        },
+        {
+          "threshold": 0.471573,
+          "coverage": 0.325,
+          "unsafe_auto": 0.2153846153846154,
+          "n_auto": 65,
+          "n_unsafe": 14
+        },
+        {
+          "threshold": 0.476696,
+          "coverage": 0.33,
+          "unsafe_auto": 0.21212121212121213,
+          "n_auto": 66,
+          "n_unsafe": 14
+        },
+        {
+          "threshold": 0.477585,
+          "coverage": 0.335,
+          "unsafe_auto": 0.208955223880597,
+          "n_auto": 67,
+          "n_unsafe": 14
+        },
+        {
+          "threshold": 0.485119,
+          "coverage": 0.34,
+          "unsafe_auto": 0.20588235294117646,
+          "n_auto": 68,
+          "n_unsafe": 14
+        },
+        {
+          "threshold": 0.492558,
+          "coverage": 0.345,
+          "unsafe_auto": 0.2028985507246377,
+          "n_auto": 69,
+          "n_unsafe": 14
+        },
+        {
+          "threshold": 0.495234,
+          "coverage": 0.35,
+          "unsafe_auto": 0.2,
+          "n_auto": 70,
+          "n_unsafe": 14
+        },
+        {
+          "threshold": 0.495961,
+          "coverage": 0.355,
+          "unsafe_auto": 0.2112676056338028,
+          "n_auto": 71,
+          "n_unsafe": 15
+        },
+        {
+          "threshold": 0.496217,
+          "coverage": 0.36,
+          "unsafe_auto": 0.20833333333333334,
+          "n_auto": 72,
+          "n_unsafe": 15
+        },
+        {
+          "threshold": 0.513061,
+          "coverage": 0.365,
+          "unsafe_auto": 0.2191780821917808,
+          "n_auto": 73,
+          "n_unsafe": 16
+        },
+        {
+          "threshold": 0.520163,
+          "coverage": 0.37,
+          "unsafe_auto": 0.21621621621621623,
+          "n_auto": 74,
+          "n_unsafe": 16
+        },
+        {
+          "threshold": 0.522178,
+          "coverage": 0.375,
+          "unsafe_auto": 0.21333333333333335,
+          "n_auto": 75,
+          "n_unsafe": 16
+        },
+        {
+          "threshold": 0.524934,
+          "coverage": 0.38,
+          "unsafe_auto": 0.21052631578947367,
+          "n_auto": 76,
+          "n_unsafe": 16
+        },
+        {
+          "threshold": 0.527309,
+          "coverage": 0.385,
+          "unsafe_auto": 0.2077922077922078,
+          "n_auto": 77,
+          "n_unsafe": 16
+        },
+        {
+          "threshold": 0.530684,
+          "coverage": 0.39,
+          "unsafe_auto": 0.20512820512820512,
+          "n_auto": 78,
+          "n_unsafe": 16
+        },
+        {
+          "threshold": 0.531289,
+          "coverage": 0.395,
+          "unsafe_auto": 0.20253164556962025,
+          "n_auto": 79,
+          "n_unsafe": 16
+        },
+        {
+          "threshold": 0.535637,
+          "coverage": 0.4,
+          "unsafe_auto": 0.2125,
+          "n_auto": 80,
+          "n_unsafe": 17
+        },
+        {
+          "threshold": 0.541764,
+          "coverage": 0.405,
+          "unsafe_auto": 0.2222222222222222,
+          "n_auto": 81,
+          "n_unsafe": 18
+        },
+        {
+          "threshold": 0.545499,
+          "coverage": 0.41,
+          "unsafe_auto": 0.23170731707317074,
+          "n_auto": 82,
+          "n_unsafe": 19
+        },
+        {
+          "threshold": 0.548953,
+          "coverage": 0.415,
+          "unsafe_auto": 0.2289156626506024,
+          "n_auto": 83,
+          "n_unsafe": 19
+        },
+        {
+          "threshold": 0.554122,
+          "coverage": 0.42,
+          "unsafe_auto": 0.2261904761904762,
+          "n_auto": 84,
+          "n_unsafe": 19
+        },
+        {
+          "threshold": 0.556657,
+          "coverage": 0.425,
+          "unsafe_auto": 0.23529411764705882,
+          "n_auto": 85,
+          "n_unsafe": 20
+        },
+        {
+          "threshold": 0.564989,
+          "coverage": 0.43,
+          "unsafe_auto": 0.23255813953488372,
+          "n_auto": 86,
+          "n_unsafe": 20
+        },
+        {
+          "threshold": 0.567666,
+          "coverage": 0.435,
+          "unsafe_auto": 0.22988505747126436,
+          "n_auto": 87,
+          "n_unsafe": 20
+        },
+        {
+          "threshold": 0.571643,
+          "coverage": 0.44,
+          "unsafe_auto": 0.23863636363636365,
+          "n_auto": 88,
+          "n_unsafe": 21
+        },
+        {
+          "threshold": 0.571991,
+          "coverage": 0.445,
+          "unsafe_auto": 0.24719101123595505,
+          "n_auto": 89,
+          "n_unsafe": 22
+        },
+        {
+          "threshold": 0.576404,
+          "coverage": 0.45,
+          "unsafe_auto": 0.24444444444444444,
+          "n_auto": 90,
+          "n_unsafe": 22
+        },
+        {
+          "threshold": 0.582746,
+          "coverage": 0.455,
+          "unsafe_auto": 0.24175824175824176,
+          "n_auto": 91,
+          "n_unsafe": 22
+        },
+        {
+          "threshold": 0.587532,
+          "coverage": 0.46,
+          "unsafe_auto": 0.2391304347826087,
+          "n_auto": 92,
+          "n_unsafe": 22
+        },
+        {
+          "threshold": 0.588781,
+          "coverage": 0.465,
+          "unsafe_auto": 0.24731182795698925,
+          "n_auto": 93,
+          "n_unsafe": 23
+        },
+        {
+          "threshold": 0.589556,
+          "coverage": 0.47,
+          "unsafe_auto": 0.24468085106382978,
+          "n_auto": 94,
+          "n_unsafe": 23
+        },
+        {
+          "threshold": 0.590413,
+          "coverage": 0.475,
+          "unsafe_auto": 0.25263157894736843,
+          "n_auto": 95,
+          "n_unsafe": 24
+        },
+        {
+          "threshold": 0.590972,
+          "coverage": 0.48,
+          "unsafe_auto": 0.25,
+          "n_auto": 96,
+          "n_unsafe": 24
+        },
+        {
+          "threshold": 0.59672,
+          "coverage": 0.485,
+          "unsafe_auto": 0.24742268041237114,
+          "n_auto": 97,
+          "n_unsafe": 24
+        },
+        {
+          "threshold": 0.596816,
+          "coverage": 0.49,
+          "unsafe_auto": 0.24489795918367346,
+          "n_auto": 98,
+          "n_unsafe": 24
+        },
+        {
+          "threshold": 0.597495,
+          "coverage": 0.495,
+          "unsafe_auto": 0.24242424242424243,
+          "n_auto": 99,
+          "n_unsafe": 24
+        },
+        {
+          "threshold": 0.601192,
+          "coverage": 0.5,
+          "unsafe_auto": 0.24,
+          "n_auto": 100,
+          "n_unsafe": 24
+        },
+        {
+          "threshold": 0.607847,
+          "coverage": 0.505,
+          "unsafe_auto": 0.24752475247524752,
+          "n_auto": 101,
+          "n_unsafe": 25
+        },
+        {
+          "threshold": 0.612156,
+          "coverage": 0.51,
+          "unsafe_auto": 0.2549019607843137,
+          "n_auto": 102,
+          "n_unsafe": 26
+        },
+        {
+          "threshold": 0.615634,
+          "coverage": 0.515,
+          "unsafe_auto": 0.2524271844660194,
+          "n_auto": 103,
+          "n_unsafe": 26
+        },
+        {
+          "threshold": 0.617107,
+          "coverage": 0.52,
+          "unsafe_auto": 0.25961538461538464,
+          "n_auto": 104,
+          "n_unsafe": 27
+        },
+        {
+          "threshold": 0.623211,
+          "coverage": 0.525,
+          "unsafe_auto": 0.26666666666666666,
+          "n_auto": 105,
+          "n_unsafe": 28
+        },
+        {
+          "threshold": 0.633915,
+          "coverage": 0.53,
+          "unsafe_auto": 0.2641509433962264,
+          "n_auto": 106,
+          "n_unsafe": 28
+        },
+        {
+          "threshold": 0.634669,
+          "coverage": 0.535,
+          "unsafe_auto": 0.27102803738317754,
+          "n_auto": 107,
+          "n_unsafe": 29
+        },
+        {
+          "threshold": 0.638651,
+          "coverage": 0.54,
+          "unsafe_auto": 0.2777777777777778,
+          "n_auto": 108,
+          "n_unsafe": 30
+        },
+        {
+          "threshold": 0.642695,
+          "coverage": 0.545,
+          "unsafe_auto": 0.28440366972477066,
+          "n_auto": 109,
+          "n_unsafe": 31
+        },
+        {
+          "threshold": 0.644202,
+          "coverage": 0.55,
+          "unsafe_auto": 0.2909090909090909,
+          "n_auto": 110,
+          "n_unsafe": 32
+        },
+        {
+          "threshold": 0.649269,
+          "coverage": 0.555,
+          "unsafe_auto": 0.2972972972972973,
+          "n_auto": 111,
+          "n_unsafe": 33
+        },
+        {
+          "threshold": 0.657314,
+          "coverage": 0.56,
+          "unsafe_auto": 0.30357142857142855,
+          "n_auto": 112,
+          "n_unsafe": 34
+        },
+        {
+          "threshold": 0.660008,
+          "coverage": 0.565,
+          "unsafe_auto": 0.30973451327433627,
+          "n_auto": 113,
+          "n_unsafe": 35
+        },
+        {
+          "threshold": 0.661367,
+          "coverage": 0.57,
+          "unsafe_auto": 0.3157894736842105,
+          "n_auto": 114,
+          "n_unsafe": 36
+        },
+        {
+          "threshold": 0.665579,
+          "coverage": 0.575,
+          "unsafe_auto": 0.3130434782608696,
+          "n_auto": 115,
+          "n_unsafe": 36
+        },
+        {
+          "threshold": 0.667914,
+          "coverage": 0.58,
+          "unsafe_auto": 0.31896551724137934,
+          "n_auto": 116,
+          "n_unsafe": 37
+        },
+        {
+          "threshold": 0.668523,
+          "coverage": 0.585,
+          "unsafe_auto": 0.3247863247863248,
+          "n_auto": 117,
+          "n_unsafe": 38
+        },
+        {
+          "threshold": 0.670087,
+          "coverage": 0.59,
+          "unsafe_auto": 0.3305084745762712,
+          "n_auto": 118,
+          "n_unsafe": 39
+        },
+        {
+          "threshold": 0.670597,
+          "coverage": 0.595,
+          "unsafe_auto": 0.3277310924369748,
+          "n_auto": 119,
+          "n_unsafe": 39
+        },
+        {
+          "threshold": 0.671912,
+          "coverage": 0.6,
+          "unsafe_auto": 0.325,
+          "n_auto": 120,
+          "n_unsafe": 39
+        },
+        {
+          "threshold": 0.672167,
+          "coverage": 0.605,
+          "unsafe_auto": 0.32231404958677684,
+          "n_auto": 121,
+          "n_unsafe": 39
+        },
+        {
+          "threshold": 0.672414,
+          "coverage": 0.61,
+          "unsafe_auto": 0.319672131147541,
+          "n_auto": 122,
+          "n_unsafe": 39
+        },
+        {
+          "threshold": 0.678615,
+          "coverage": 0.615,
+          "unsafe_auto": 0.3252032520325203,
+          "n_auto": 123,
+          "n_unsafe": 40
+        },
+        {
+          "threshold": 0.679683,
+          "coverage": 0.62,
+          "unsafe_auto": 0.33064516129032256,
+          "n_auto": 124,
+          "n_unsafe": 41
+        },
+        {
+          "threshold": 0.680409,
+          "coverage": 0.625,
+          "unsafe_auto": 0.336,
+          "n_auto": 125,
+          "n_unsafe": 42
+        },
+        {
+          "threshold": 0.682489,
+          "coverage": 0.63,
+          "unsafe_auto": 0.3412698412698413,
+          "n_auto": 126,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.683535,
+          "coverage": 0.635,
+          "unsafe_auto": 0.33858267716535434,
+          "n_auto": 127,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.685335,
+          "coverage": 0.64,
+          "unsafe_auto": 0.3359375,
+          "n_auto": 128,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.68679,
+          "coverage": 0.645,
+          "unsafe_auto": 0.3333333333333333,
+          "n_auto": 129,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.696958,
+          "coverage": 0.65,
+          "unsafe_auto": 0.33076923076923076,
+          "n_auto": 130,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.698455,
+          "coverage": 0.655,
+          "unsafe_auto": 0.3282442748091603,
+          "n_auto": 131,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.702152,
+          "coverage": 0.66,
+          "unsafe_auto": 0.32575757575757575,
+          "n_auto": 132,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.703651,
+          "coverage": 0.665,
+          "unsafe_auto": 0.3233082706766917,
+          "n_auto": 133,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.704963,
+          "coverage": 0.67,
+          "unsafe_auto": 0.3208955223880597,
+          "n_auto": 134,
+          "n_unsafe": 43
+        },
+        {
+          "threshold": 0.705455,
+          "coverage": 0.675,
+          "unsafe_auto": 0.32592592592592595,
+          "n_auto": 135,
+          "n_unsafe": 44
+        },
+        {
+          "threshold": 0.713166,
+          "coverage": 0.68,
+          "unsafe_auto": 0.33088235294117646,
+          "n_auto": 136,
+          "n_unsafe": 45
+        },
+        {
+          "threshold": 0.717936,
+          "coverage": 0.685,
+          "unsafe_auto": 0.3357664233576642,
+          "n_auto": 137,
+          "n_unsafe": 46
+        },
+        {
+          "threshold": 0.718239,
+          "coverage": 0.69,
+          "unsafe_auto": 0.3333333333333333,
+          "n_auto": 138,
+          "n_unsafe": 46
+        },
+        {
+          "threshold": 0.721745,
+          "coverage": 0.695,
+          "unsafe_auto": 0.3381294964028777,
+          "n_auto": 139,
+          "n_unsafe": 47
+        },
+        {
+          "threshold": 0.722973,
+          "coverage": 0.7,
+          "unsafe_auto": 0.34285714285714286,
+          "n_auto": 140,
+          "n_unsafe": 48
+        },
+        {
+          "threshold": 0.727895,
+          "coverage": 0.705,
+          "unsafe_auto": 0.3404255319148936,
+          "n_auto": 141,
+          "n_unsafe": 48
+        },
+        {
+          "threshold": 0.74364,
+          "coverage": 0.71,
+          "unsafe_auto": 0.3380281690140845,
+          "n_auto": 142,
+          "n_unsafe": 48
+        },
+        {
+          "threshold": 0.746923,
+          "coverage": 0.715,
+          "unsafe_auto": 0.34265734265734266,
+          "n_auto": 143,
+          "n_unsafe": 49
+        },
+        {
+          "threshold": 0.754041,
+          "coverage": 0.72,
+          "unsafe_auto": 0.3402777777777778,
+          "n_auto": 144,
+          "n_unsafe": 49
+        },
+        {
+          "threshold": 0.756811,
+          "coverage": 0.725,
+          "unsafe_auto": 0.3448275862068966,
+          "n_auto": 145,
+          "n_unsafe": 50
+        },
+        {
+          "threshold": 0.757654,
+          "coverage": 0.73,
+          "unsafe_auto": 0.3493150684931507,
+          "n_auto": 146,
+          "n_unsafe": 51
+        },
+        {
+          "threshold": 0.758008,
+          "coverage": 0.735,
+          "unsafe_auto": 0.35374149659863946,
+          "n_auto": 147,
+          "n_unsafe": 52
+        },
+        {
+          "threshold": 0.758747,
+          "coverage": 0.74,
+          "unsafe_auto": 0.35135135135135137,
+          "n_auto": 148,
+          "n_unsafe": 52
+        },
+        {
+          "threshold": 0.761921,
+          "coverage": 0.745,
+          "unsafe_auto": 0.35570469798657717,
+          "n_auto": 149,
+          "n_unsafe": 53
+        },
+        {
+          "threshold": 0.774482,
+          "coverage": 0.75,
+          "unsafe_auto": 0.36,
+          "n_auto": 150,
+          "n_unsafe": 54
+        },
+        {
+          "threshold": 0.776544,
+          "coverage": 0.755,
+          "unsafe_auto": 0.36423841059602646,
+          "n_auto": 151,
+          "n_unsafe": 55
+        },
+        {
+          "threshold": 0.789928,
+          "coverage": 0.76,
+          "unsafe_auto": 0.3684210526315789,
+          "n_auto": 152,
+          "n_unsafe": 56
+        },
+        {
+          "threshold": 0.791989,
+          "coverage": 0.765,
+          "unsafe_auto": 0.37254901960784315,
+          "n_auto": 153,
+          "n_unsafe": 57
+        },
+        {
+          "threshold": 0.796122,
+          "coverage": 0.77,
+          "unsafe_auto": 0.37662337662337664,
+          "n_auto": 154,
+          "n_unsafe": 58
+        },
+        {
+          "threshold": 0.802264,
+          "coverage": 0.775,
+          "unsafe_auto": 0.38064516129032255,
+          "n_auto": 155,
+          "n_unsafe": 59
+        },
+        {
+          "threshold": 0.805277,
+          "coverage": 0.78,
+          "unsafe_auto": 0.3782051282051282,
+          "n_auto": 156,
+          "n_unsafe": 59
+        },
+        {
+          "threshold": 0.807917,
+          "coverage": 0.785,
+          "unsafe_auto": 0.3821656050955414,
+          "n_auto": 157,
+          "n_unsafe": 60
+        },
+        {
+          "threshold": 0.814274,
+          "coverage": 0.79,
+          "unsafe_auto": 0.3860759493670886,
+          "n_auto": 158,
+          "n_unsafe": 61
+        },
+        {
+          "threshold": 0.814277,
+          "coverage": 0.795,
+          "unsafe_auto": 0.389937106918239,
+          "n_auto": 159,
+          "n_unsafe": 62
+        },
+        {
+          "threshold": 0.817203,
+          "coverage": 0.8,
+          "unsafe_auto": 0.39375,
+          "n_auto": 160,
+          "n_unsafe": 63
+        },
+        {
+          "threshold": 0.818463,
+          "coverage": 0.805,
+          "unsafe_auto": 0.391304347826087,
+          "n_auto": 161,
+          "n_unsafe": 63
+        },
+        {
+          "threshold": 0.81971,
+          "coverage": 0.81,
+          "unsafe_auto": 0.3950617283950617,
+          "n_auto": 162,
+          "n_unsafe": 64
+        },
+        {
+          "threshold": 0.828352,
+          "coverage": 0.815,
+          "unsafe_auto": 0.3987730061349693,
+          "n_auto": 163,
+          "n_unsafe": 65
+        },
+        {
+          "threshold": 0.831822,
+          "coverage": 0.82,
+          "unsafe_auto": 0.39634146341463417,
+          "n_auto": 164,
+          "n_unsafe": 65
+        },
+        {
+          "threshold": 0.834829,
+          "coverage": 0.825,
+          "unsafe_auto": 0.3939393939393939,
+          "n_auto": 165,
+          "n_unsafe": 65
+        },
+        {
+          "threshold": 0.847615,
+          "coverage": 0.83,
+          "unsafe_auto": 0.39759036144578314,
+          "n_auto": 166,
+          "n_unsafe": 66
+        },
+        {
+          "threshold": 0.84766,
+          "coverage": 0.835,
+          "unsafe_auto": 0.39520958083832336,
+          "n_auto": 167,
+          "n_unsafe": 66
+        },
+        {
+          "threshold": 0.852742,
+          "coverage": 0.84,
+          "unsafe_auto": 0.39880952380952384,
+          "n_auto": 168,
+          "n_unsafe": 67
+        },
+        {
+          "threshold": 0.863115,
+          "coverage": 0.845,
+          "unsafe_auto": 0.40236686390532544,
+          "n_auto": 169,
+          "n_unsafe": 68
+        },
+        {
+          "threshold": 0.866293,
+          "coverage": 0.85,
+          "unsafe_auto": 0.40588235294117647,
+          "n_auto": 170,
+          "n_unsafe": 69
+        },
+        {
+          "threshold": 0.873366,
+          "coverage": 0.855,
+          "unsafe_auto": 0.4093567251461988,
+          "n_auto": 171,
+          "n_unsafe": 70
+        },
+        {
+          "threshold": 0.873809,
+          "coverage": 0.86,
+          "unsafe_auto": 0.4127906976744186,
+          "n_auto": 172,
+          "n_unsafe": 71
+        },
+        {
+          "threshold": 0.874753,
+          "coverage": 0.865,
+          "unsafe_auto": 0.4161849710982659,
+          "n_auto": 173,
+          "n_unsafe": 72
+        },
+        {
+          "threshold": 0.888537,
+          "coverage": 0.87,
+          "unsafe_auto": 0.41954022988505746,
+          "n_auto": 174,
+          "n_unsafe": 73
+        },
+        {
+          "threshold": 0.895423,
+          "coverage": 0.875,
+          "unsafe_auto": 0.4228571428571429,
+          "n_auto": 175,
+          "n_unsafe": 74
+        },
+        {
+          "threshold": 0.896848,
+          "coverage": 0.88,
+          "unsafe_auto": 0.42613636363636365,
+          "n_auto": 176,
+          "n_unsafe": 75
+        },
+        {
+          "threshold": 0.899849,
+          "coverage": 0.885,
+          "unsafe_auto": 0.4293785310734463,
+          "n_auto": 177,
+          "n_unsafe": 76
+        },
+        {
+          "threshold": 0.902849,
+          "coverage": 0.89,
+          "unsafe_auto": 0.43258426966292135,
+          "n_auto": 178,
+          "n_unsafe": 77
+        },
+        {
+          "threshold": 0.908501,
+          "coverage": 0.895,
+          "unsafe_auto": 0.43575418994413406,
+          "n_auto": 179,
+          "n_unsafe": 78
+        },
+        {
+          "threshold": 0.911487,
+          "coverage": 0.9,
+          "unsafe_auto": 0.4388888888888889,
+          "n_auto": 180,
+          "n_unsafe": 79
+        },
+        {
+          "threshold": 0.91376,
+          "coverage": 0.905,
+          "unsafe_auto": 0.4419889502762431,
+          "n_auto": 181,
+          "n_unsafe": 80
+        },
+        {
+          "threshold": 0.919757,
+          "coverage": 0.91,
+          "unsafe_auto": 0.44505494505494503,
+          "n_auto": 182,
+          "n_unsafe": 81
+        },
+        {
+          "threshold": 0.932529,
+          "coverage": 0.915,
+          "unsafe_auto": 0.44808743169398907,
+          "n_auto": 183,
+          "n_unsafe": 82
+        },
+        {
+          "threshold": 0.932635,
+          "coverage": 0.92,
+          "unsafe_auto": 0.45108695652173914,
+          "n_auto": 184,
+          "n_unsafe": 83
+        },
+        {
+          "threshold": 0.945592,
+          "coverage": 0.925,
+          "unsafe_auto": 0.4540540540540541,
+          "n_auto": 185,
+          "n_unsafe": 84
+        },
+        {
+          "threshold": 0.948197,
+          "coverage": 0.93,
+          "unsafe_auto": 0.45698924731182794,
+          "n_auto": 186,
+          "n_unsafe": 85
+        },
+        {
+          "threshold": 0.961403,
+          "coverage": 0.935,
+          "unsafe_auto": 0.45989304812834225,
+          "n_auto": 187,
+          "n_unsafe": 86
+        },
+        {
+          "threshold": 0.972951,
+          "coverage": 0.94,
+          "unsafe_auto": 0.4627659574468085,
+          "n_auto": 188,
+          "n_unsafe": 87
+        },
+        {
+          "threshold": 0.974083,
+          "coverage": 0.945,
+          "unsafe_auto": 0.4656084656084656,
+          "n_auto": 189,
+          "n_unsafe": 88
+        },
+        {
+          "threshold": 0.974803,
+          "coverage": 0.95,
+          "unsafe_auto": 0.46842105263157896,
+          "n_auto": 190,
+          "n_unsafe": 89
+        },
+        {
+          "threshold": 0.978664,
+          "coverage": 0.955,
+          "unsafe_auto": 0.4712041884816754,
+          "n_auto": 191,
+          "n_unsafe": 90
+        },
+        {
+          "threshold": 0.979159,
+          "coverage": 0.96,
+          "unsafe_auto": 0.4739583333333333,
+          "n_auto": 192,
+          "n_unsafe": 91
+        },
+        {
+          "threshold": 0.98948,
+          "coverage": 0.965,
+          "unsafe_auto": 0.47668393782383417,
+          "n_auto": 193,
+          "n_unsafe": 92
+        },
+        {
+          "threshold": 0.990107,
+          "coverage": 0.97,
+          "unsafe_auto": 0.4793814432989691,
+          "n_auto": 194,
+          "n_unsafe": 93
+        },
+        {
+          "threshold": 0.992262,
+          "coverage": 0.975,
+          "unsafe_auto": 0.48205128205128206,
+          "n_auto": 195,
+          "n_unsafe": 94
+        },
+        {
+          "threshold": 0.993002,
+          "coverage": 0.98,
+          "unsafe_auto": 0.4846938775510204,
+          "n_auto": 196,
+          "n_unsafe": 95
+        },
+        {
+          "threshold": 0.994513,
+          "coverage": 0.985,
+          "unsafe_auto": 0.4873096446700508,
+          "n_auto": 197,
+          "n_unsafe": 96
+        },
+        {
+          "threshold": 0.996957,
+          "coverage": 0.99,
+          "unsafe_auto": 0.4898989898989899,
+          "n_auto": 198,
+          "n_unsafe": 97
+        },
+        {
+          "threshold": 0.997879,
+          "coverage": 0.995,
+          "unsafe_auto": 0.49246231155778897,
+          "n_auto": 199,
+          "n_unsafe": 98
+        },
+        {
+          "threshold": 1.0001,
+          "coverage": 1.0,
+          "unsafe_auto": 0.495,
+          "n_auto": 200,
+          "n_unsafe": 99
+        }
+      ]
+    },
+    "keyword": {
+      "coverage": 0.875,
+      "unsafe": 77,
+      "auto": 175,
+      "n": 200,
+      "construction": "union of profile.MUST_PROXY regexes plus the DM-follow-up marker, all written against train text; nothing fitted",
+      "uses_human_labels": false
+    },
+    "lookup-codebook-distant-lr": {
+      "coverage": 0.295,
+      "unsafe": 13,
+      "auto": 59,
+      "n": 200,
+      "construction": "codebook escalation_role applied to the 'distant-lr' predicted intent; no human label enters either stage",
+      "uses_human_labels": false
+    },
+    "lookup-codebook-rule": {
+      "coverage": 0.25,
+      "unsafe": 10,
+      "auto": 50,
+      "n": 200,
+      "construction": "codebook escalation_role applied to the 'rule' predicted intent; no human label enters either stage",
+      "uses_human_labels": false
+    },
+    "lookup-oracle": {
+      "coverage": 0.51,
+      "unsafe": 7,
+      "auto": 102,
+      "n": 200,
+      "construction": "each intent mapped to its MAJORITY escalation decision in the golden set, applied to the GOLD intent",
+      "uses_human_labels": true
+    },
+    "never-escalate": {
+      "coverage": 1.0,
+      "unsafe": 99,
+      "auto": 200,
+      "n": 200,
+      "construction": "constant AUTO_OK; coverage 100%, unsafe-auto = the base rate",
+      "uses_human_labels": false
+    },
+    "_mcnemar": {
+      "distant-lr-score|keyword": {
+        "b": 62,
+        "c": 42,
+        "p_value": 0.06192637987862746
+      },
+      "distant-lr-score|lookup-codebook-distant-lr": {
+        "b": 11,
+        "c": 3,
+        "p_value": 0.057373046875
+      },
+      "distant-lr-score|lookup-codebook-rule": {
+        "b": 17,
+        "c": 6,
+        "p_value": 0.03468966484069824
+      },
+      "distant-lr-score|lookup-oracle": {
+        "b": 1,
+        "c": 48,
+        "p_value": 1.7763568394002505e-13
+      },
+      "keyword|lookup-codebook-distant-lr": {
+        "b": 52,
+        "c": 64,
+        "p_value": 0.3070896636491835
+      },
+      "keyword|lookup-codebook-rule": {
+        "b": 58,
+        "c": 67,
+        "p_value": 0.47442157344095126
+      },
+      "keyword|lookup-oracle": {
+        "b": 4,
+        "c": 71,
+        "p_value": 6.8071061652263e-17
+      },
+      "lookup-codebook-distant-lr|lookup-codebook-rule": {
+        "b": 7,
+        "c": 4,
+        "p_value": 0.548828125
+      },
+      "lookup-codebook-distant-lr|lookup-oracle": {
+        "b": 1,
+        "c": 56,
+        "p_value": 8.049116928532385e-16
+      },
+      "lookup-codebook-rule|lookup-oracle": {
+        "b": 1,
+        "c": 59,
+        "p_value": 1.0581813203458523e-16
+      }
+    }
+  },
+  "reasons": {
+    "always-escalate": {
+      "n_escalated": 200,
+      "valid": true,
+      "rule_activations": {
+        "fallback:ambiguous": 142,
+        "rule:high_frustration": 10,
+        "fallback:payment_dispute": 12,
+        "rule:account_access": 10,
+        "rule:security": 6,
+        "fallback:account_access": 5,
+        "rule:failed_self_service": 5,
+        "rule:existing_case": 3,
+        "rule:out_of_scope": 1,
+        "rule:safety_abuse": 1,
+        "rule:payment_dispute": 4,
+        "rule:legal_rights": 1
+      },
+      "rule_coverage": {
+        "by_rule": 41,
+        "by_fallback": 159
+      },
+      "reason_agreement": {
+        "correct": 47,
+        "n": 99
+      },
+      "top_reason_confusions": [
+        {
+          "human": "payment_dispute",
+          "pred": "ambiguous",
+          "n": 15
+        },
+        {
+          "human": "account_access",
+          "pred": "ambiguous",
+          "n": 8
+        },
+        {
+          "human": "out_of_scope",
+          "pred": "ambiguous",
+          "n": 7
+        },
+        {
+          "human": "failed_self_service",
+          "pred": "ambiguous",
+          "n": 5
+        },
+        {
+          "human": "existing_case",
+          "pred": "ambiguous",
+          "n": 2
+        },
+        {
+          "human": "security",
+          "pred": "failed_self_service",
+          "n": 2
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "account_access",
+          "n": 2
+        },
+        {
+          "human": "account_access",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "security",
+          "pred": "existing_case",
+          "n": 1
+        }
+      ]
+    },
+    "distant-lr-score": {
+      "n_escalated": 127,
+      "valid": true,
+      "rule_activations": {
+        "fallback:ambiguous": 76,
+        "fallback:payment_dispute": 13,
+        "rule:account_access": 10,
+        "rule:high_frustration": 5,
+        "rule:security": 5,
+        "rule:failed_self_service": 3,
+        "rule:existing_case": 3,
+        "rule:out_of_scope": 1,
+        "fallback:account_access": 5,
+        "rule:safety_abuse": 1,
+        "rule:payment_dispute": 4,
+        "rule:legal_rights": 1
+      },
+      "rule_coverage": {
+        "by_rule": 33,
+        "by_fallback": 94
+      },
+      "reason_agreement": {
+        "correct": 44,
+        "n": 83
+      },
+      "top_reason_confusions": [
+        {
+          "human": "payment_dispute",
+          "pred": "ambiguous",
+          "n": 10
+        },
+        {
+          "human": "account_access",
+          "pred": "ambiguous",
+          "n": 6
+        },
+        {
+          "human": "out_of_scope",
+          "pred": "ambiguous",
+          "n": 6
+        },
+        {
+          "human": "existing_case",
+          "pred": "ambiguous",
+          "n": 2
+        },
+        {
+          "human": "security",
+          "pred": "failed_self_service",
+          "n": 2
+        },
+        {
+          "human": "account_access",
+          "pred": "payment_dispute",
+          "n": 2
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "account_access",
+          "n": 2
+        },
+        {
+          "human": "account_access",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "security",
+          "pred": "existing_case",
+          "n": 1
+        }
+      ]
+    },
+    "keyword": {
+      "n_escalated": 25,
+      "valid": true,
+      "rule_activations": {
+        "rule:account_access": 10,
+        "rule:security": 6,
+        "rule:existing_case": 3,
+        "rule:safety_abuse": 1,
+        "rule:payment_dispute": 4,
+        "rule:legal_rights": 1
+      },
+      "rule_coverage": {
+        "by_rule": 25,
+        "by_fallback": 0
+      },
+      "reason_agreement": {
+        "correct": 16,
+        "n": 22
+      },
+      "top_reason_confusions": [
+        {
+          "human": "payment_dispute",
+          "pred": "account_access",
+          "n": 2
+        },
+        {
+          "human": "account_access",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "security",
+          "pred": "existing_case",
+          "n": 1
+        },
+        {
+          "human": "account_access",
+          "pred": "payment_dispute",
+          "n": 1
+        }
+      ]
+    },
+    "lookup-codebook-distant-lr": {
+      "n_escalated": 141,
+      "valid": true,
+      "rule_activations": {
+        "fallback:ambiguous": 88,
+        "fallback:payment_dispute": 13,
+        "rule:account_access": 10,
+        "rule:high_frustration": 6,
+        "rule:security": 6,
+        "rule:failed_self_service": 3,
+        "rule:existing_case": 3,
+        "rule:out_of_scope": 1,
+        "fallback:account_access": 5,
+        "rule:safety_abuse": 1,
+        "rule:payment_dispute": 4,
+        "rule:legal_rights": 1
+      },
+      "rule_coverage": {
+        "by_rule": 35,
+        "by_fallback": 106
+      },
+      "reason_agreement": {
+        "correct": 45,
+        "n": 86
+      },
+      "top_reason_confusions": [
+        {
+          "human": "payment_dispute",
+          "pred": "ambiguous",
+          "n": 11
+        },
+        {
+          "human": "account_access",
+          "pred": "ambiguous",
+          "n": 6
+        },
+        {
+          "human": "out_of_scope",
+          "pred": "ambiguous",
+          "n": 6
+        },
+        {
+          "human": "existing_case",
+          "pred": "ambiguous",
+          "n": 2
+        },
+        {
+          "human": "security",
+          "pred": "failed_self_service",
+          "n": 2
+        },
+        {
+          "human": "account_access",
+          "pred": "payment_dispute",
+          "n": 2
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "account_access",
+          "n": 2
+        },
+        {
+          "human": "account_access",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "security",
+          "pred": "existing_case",
+          "n": 1
+        }
+      ]
+    },
+    "lookup-codebook-rule": {
+      "n_escalated": 150,
+      "valid": true,
+      "rule_activations": {
+        "fallback:ambiguous": 98,
+        "fallback:payment_dispute": 12,
+        "rule:account_access": 10,
+        "rule:high_frustration": 6,
+        "rule:security": 6,
+        "fallback:account_access": 5,
+        "rule:failed_self_service": 3,
+        "rule:existing_case": 3,
+        "rule:out_of_scope": 1,
+        "rule:safety_abuse": 1,
+        "rule:payment_dispute": 4,
+        "rule:legal_rights": 1
+      },
+      "rule_coverage": {
+        "by_rule": 35,
+        "by_fallback": 115
+      },
+      "reason_agreement": {
+        "correct": 46,
+        "n": 89
+      },
+      "top_reason_confusions": [
+        {
+          "human": "payment_dispute",
+          "pred": "ambiguous",
+          "n": 12
+        },
+        {
+          "human": "account_access",
+          "pred": "ambiguous",
+          "n": 8
+        },
+        {
+          "human": "out_of_scope",
+          "pred": "ambiguous",
+          "n": 6
+        },
+        {
+          "human": "existing_case",
+          "pred": "ambiguous",
+          "n": 2
+        },
+        {
+          "human": "security",
+          "pred": "failed_self_service",
+          "n": 2
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "account_access",
+          "n": 2
+        },
+        {
+          "human": "account_access",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "security",
+          "pred": "existing_case",
+          "n": 1
+        },
+        {
+          "human": "ambiguous",
+          "pred": "high_frustration",
+          "n": 1
+        }
+      ]
+    },
+    "lookup-oracle": {
+      "n_escalated": 98,
+      "valid": true,
+      "rule_activations": {
+        "fallback:payment_dispute": 26,
+        "rule:account_access": 10,
+        "rule:security": 5,
+        "fallback:account_access": 16,
+        "fallback:ambiguous": 26,
+        "rule:failed_self_service": 3,
+        "rule:existing_case": 3,
+        "rule:out_of_scope": 1,
+        "rule:high_frustration": 2,
+        "rule:safety_abuse": 1,
+        "rule:payment_dispute": 4,
+        "rule:legal_rights": 1
+      },
+      "rule_coverage": {
+        "by_rule": 30,
+        "by_fallback": 68
+      },
+      "reason_agreement": {
+        "correct": 68,
+        "n": 92
+      },
+      "top_reason_confusions": [
+        {
+          "human": "out_of_scope",
+          "pred": "ambiguous",
+          "n": 7
+        },
+        {
+          "human": "existing_case",
+          "pred": "ambiguous",
+          "n": 2
+        },
+        {
+          "human": "security",
+          "pred": "failed_self_service",
+          "n": 2
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "account_access",
+          "n": 2
+        },
+        {
+          "human": "account_access",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "security",
+          "n": 1
+        },
+        {
+          "human": "security",
+          "pred": "existing_case",
+          "n": 1
+        },
+        {
+          "human": "ambiguous",
+          "pred": "high_frustration",
+          "n": 1
+        },
+        {
+          "human": "public_pii",
+          "pred": "payment_dispute",
+          "n": 1
+        },
+        {
+          "human": "payment_dispute",
+          "pred": "failed_self_service",
+          "n": 1
+        }
+      ]
+    },
+    "never-escalate": {
+      "n_escalated": 0,
+      "valid": true,
+      "rule_activations": {},
+      "rule_coverage": {
+        "by_rule": 0,
+        "by_fallback": 0
+      }
+    },
+    "_reason_rule_coverage_gaps": [
+      "public_pii",
+      "ambiguous"
+    ],
+    "_human_reason_distribution": {
+      "payment_dispute": 32,
+      "account_access": 24,
+      "existing_case": 3,
+      "security": 7,
+      "ambiguous": 15,
+      "out_of_scope": 8,
+      "failed_self_service": 5,
+      "public_pii": 2,
+      "legal_rights": 2,
+      "high_frustration": 1
+    }
+  },
+  "handoff": {
+    "distant-lr-score": {
+      "n": 127,
+      "guardrail_failures": 0,
+      "distinct_replies": 10,
+      "echo_violations": 0
+    },
+    "keyword": {
+      "n": 25,
+      "guardrail_failures": 0,
+      "distinct_replies": 6,
+      "echo_violations": 0
+    },
+    "lookup-codebook-distant-lr": {
+      "n": 141,
+      "guardrail_failures": 0,
+      "distinct_replies": 10,
+      "echo_violations": 0
+    },
+    "lookup-codebook-rule": {
+      "n": 150,
+      "guardrail_failures": 0,
+      "distinct_replies": 10,
+      "echo_violations": 0
+    },
+    "lookup-oracle": {
+      "n": 98,
+      "guardrail_failures": 0,
+      "distinct_replies": 10,
+      "echo_violations": 0
+    }
+  },
+  "drafts": {
+    "lookup-codebook-distant-lr_golden": {
+      "routes": {
+        "handoff": 141,
+        "handoff_fallback": 16,
+        "auto_reply": 43
+      },
+      "unsafe_auto": 12,
+      "n_auto": 43,
+      "dry_run": false,
+      "judge": {
+        "parsed": 200,
+        "n": 200,
+        "acceptable": 172
+      }
+    },
+    "lookup-codebook-distant-lr_golden_mock": {
+      "routes": {
+        "handoff": 141,
+        "auto_reply": 59
+      },
+      "unsafe_auto": 13,
+      "n_auto": 59,
+      "dry_run": true,
+      "judge": {
+        "parsed": 200,
+        "n": 200,
+        "acceptable": 200
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "classifier": "llm",
+  "split": "golden",
+  "n": 200,
+  "saw_human_labels": false,
+  "construction": "prompted with the locked codebook; no human labels in the prompt",
+  "provider": "openai-compat",
+  "model": "llama3.2:3b",
+  "is_mock": false,
+  "prompt_sha256": "40cb56cd8bc218d7",
+  "usage": {
+    "calls": 200,
+    "cached": 0,
+    "billed_calls": 0,
+    "usd": 0.0,
+    "any_mock": false,
+    "by_provider": {
+      "openai-compat:llama3.2:3b": {
+        "calls": 200,
+        "cached": 0,
+        "input_tokens": 277938,
+        "output_tokens": 728,
+        "usd": 0.0,
+        "is_mock": false
+      }
+    }
+  }
+}

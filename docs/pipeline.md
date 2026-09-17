@@ -1,4 +1,8 @@
-# D8 pipeline — implementation status and plan
+# D8 pipeline — implementation status
+
+**Status updated 2026-09-17.** Sections 1–3 and 5 record the methodology as it was
+decided and are unchanged. Sections 4, 6 and 7 record *status* and have been
+brought up to date: the LLM stages have since run, on a local model, at zero cost.
 
 Required architecture, quoted from `docs/decisions.md` D8 (unchanged, not reinvented):
 
@@ -16,13 +20,13 @@ customer message
 | Corpus, threads, temporal split | **built** | `scripts/corpus.py` |
 | Text normalisation (D10) | reused | `scripts/profile.py` |
 | Retrieval + leakage controls | **built** | `scripts/retrieval.py` |
-| Intent classification | **built** (rule, distant-lr; llm written, not run) | `scripts/classify.py` |
+| Intent classification | **built and run** — rule, distant-lr, llm (`llama3.2:3b`) | `scripts/classify.py` |
 | Escalation decision + reason | **built** | `scripts/policy.py` |
-| LLM draft + guardrails | **built**, dry-run tested, unrun | `scripts/draft.py` |
+| LLM draft + guardrails | **built and run** — `llama3.2:3b`, 200 items | `scripts/draft.py` |
 | Deterministic handoff template | **built** | `scripts/handoff.py` |
 | Baselines (D14) | **built** | `scripts/classify.py`, `scripts/policy.py` |
 | Evaluation harness (D3/D5/D7) | **built** | `scripts/evaluate.py` |
-| LLM judge + corruption probes (D11) | **built**, selftested, unrun | `scripts/judge.py` |
+| LLM judge + corruption probes (D11) | **built and run** — `llama3.2:3b`, 200 judged + 80 probes | `scripts/judge.py` |
 
 ---
 
@@ -112,16 +116,27 @@ reproduces 93.5% of human escalation decisions in-sample
 escalation model that has merely learned the intent must not be able to pass as a
 safety result.
 
-## 4. Next steps, in order
+## 4. What has run, and what has not
 
-1. **LLM intent classifier run** — written and cached-by-design; needs an API key
-   and explicit D19 budget approval.
-2. **LLM drafting + guardrails**, then the judge and its validation (D11).
-3. **D12 retest** on/after 2026-09-19, which supplies the reliability ceiling
-   every judge–human agreement figure has to be read against.
+**Run, on `llama3.2:3b` via a local OpenAI-compatible server, 0 billed calls:**
 
-Every remaining no-API component is built. Steps 1–2 need an API key and explicit
-D19 authorisation; step 3 needs neither.
+| Stage | Result | Artefact |
+|---|---|---|
+| LLM intent classifier | 200 items — core 38.1%, full 42.0%, macro-F1 0.333 | `outputs/preds/intent_llm_golden.csv` |
+| LLM drafting + guardrails | 200 items — 43 auto-replies, 141 handoffs, 16 guardrail fallbacks | `outputs/preds/drafts_lookup-codebook-distant-lr_golden.csv` |
+| LLM judge (D11) | 200/200 parsed, 86.0% acceptable | `outputs/preds/judge_lookup-codebook-distant-lr_golden.csv` |
+| Corruption probes (D11) | 59/80 = 73.75% detected | `outputs/preds/probes_lookup-codebook-distant-lr_golden.csv` |
+
+Every response is in `cache/llm/` and is committed, so these replay offline.
+Full results and their caveats: `docs/report.md` §5–§7.
+
+**Not run:**
+
+1. **D11 human reply-quality ratings**, and therefore no judge–human agreement.
+   The 60-row sheet in `data/golden/` holds AI-generated review suggestions, not
+   human annotation, and is not used as a result. This is an open gap.
+2. **D12 retest second pass** — pre-registered earliest start 2026-09-19, after
+   the 09-17 deadline. The gate was not moved (`docs/retest.md` §5).
 
 ## 5. Reproducibility
 
@@ -131,10 +146,16 @@ come); everything before it ran on pandas/numpy alone.
 
 ---
 
-## 6. API budget plan (D19) — awaiting authorisation, nothing spent
+## 6. API budget (D19) — outcome: **₹0 / $0.00 spent**
 
-No API call has been made. `scripts/classify.py --predict llm` refuses without
-`--allow-api`, and there is no `ANTHROPIC_API_KEY` on this machine.
+**No billed API call was ever made.** The plan below was costed for the Anthropic
+route and kept for the audit trail; it was superseded by the local
+`openai-compat` route (D24), which cost nothing. Every stage metadata file
+records `billed_calls: 0`, `usd: 0.0`. `scripts/classify.py --predict llm` still
+refuses a billed provider without `--allow-api`, and no `ANTHROPIC_API_KEY` was
+ever present.
+
+### 6.1 The original costed plan (superseded, kept for the record)
 
 **Token estimates are measured, not guessed**: the classifier prompt is 5,817
 characters (~1,616 tokens) as built by `build_prompt()`; the mean golden message
@@ -168,4 +189,45 @@ D20's same-family judge bias.
 **Caching**: every call is keyed on sha256(model, prompt, params, message) and
 written to `cache/llm/`. Re-running a completed stage costs nothing; only an
 edited prompt or a changed model invalidates entries. Whether that cache ships in
-the repo for the <15-minute reproducibility requirement is D22, still open.
+the repo for the <15-minute reproducibility requirement was D22; **it is now
+resolved — the real-provider cache is committed** and the mock entries are not
+(`.gitignore`: `!cache/llm/`, `cache/llm/*_mock_*`).
+
+
+---
+
+## 7. Provider abstraction — recorded as **D24** in `docs/decisions.md`
+
+`scripts/providers.py` puts every model call behind one `complete(prompt,
+message, params) -> Response` interface, with three implementations: `mock`
+(default, offline, free), `openai-compat` (any self-hosted OpenAI-compatible
+server, free) and `anthropic` (optional, billed, gated behind `--allow-api`).
+
+**Why the default is a mock rather than a local model.** A local model is the
+better default in principle, and `openai-compat` is the supported path to one. It
+could not be the default on the machine the refactor was written on: 2 cores,
+3.9 GB RAM, no GPU, and an egress allowlist blocking `huggingface.co` and
+`ollama.com` (measured — `pypi.org` answers 200, both model hosts answer 000).
+The runtime installs; the weights could not be fetched. So the offline default is
+a stub, and the free path to real output is a server run on a machine that can
+reach weights.
+
+**That path is what shipped.** The LLM stages were subsequently run against
+Ollama serving `llama3.2:3b` on a machine that could fetch the weights, via
+`--provider openai-compat --base-url http://127.0.0.1:11434/v1`. The mock
+remains the zero-dependency default; it is no longer the only thing that has
+run.
+
+**Three barriers keep mock output from being mistaken for a result:** every
+response is stamped `is_mock`, every artefact gets a `_mock` filename suffix and
+`is_mock: true` in its metadata, and `evaluate.py` prints mock rows under a
+`[MOCK PROVIDER - NOT A RESULT]` banner and excludes them from the baseline
+comparison and from McNemar. The cache key includes the provider, so a mock entry
+and a real entry can never collide or silently substitute.
+
+**What the refactor bought, and what is still missing from deliverable 3.** The
+one-flag switch let a real judge run at zero cost, and its responses ship in the
+cache so a grader reproduces them with no credentials and no model. Deliverable 3
+also asks for judge–human agreement evidence, and that half is **not** delivered:
+see `docs/report.md` §8. The judge is qualified here by its corruption probes
+alone.

@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 5, \"routing\": 5, \"tone\": 5, \"acceptable\": true, \"why\": \"Provides a clear request for more information without escalating the issue publicly.\"}", "input_tokens": 290, "output_tokens": 50, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

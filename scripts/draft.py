@@ -38,6 +38,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import classify as CL  # noqa: E402
 import corpus as C  # noqa: E402
 import handoff as H  # noqa: E402
+import providers as PR  # noqa: E402
 import retrieval as R  # noqa: E402
 
 PRED_DIR = CL.PRED_DIR
@@ -45,6 +46,15 @@ K_EVIDENCE = 3
 DRAFT_PARAMS: dict[str, Any] = {"max_tokens": 200, "temperature": 0.0}
 MAX_CHARS = H.MAX_CHARS
 INVENTED_NUMBER = re.compile(r"[$£€]\s?\d|\b\d{4,}\b|\border\s*#?\d|\bref(?:erence)?\s*#?\d", re.I)
+
+# TWCS anonymises customer handles as pure digits - @115888, @116130, @448281 - so a
+# reply that addresses the customer by handle, which is ordinary Twitter behaviour and
+# is what the retrieved evidence demonstrates, was tripping the \b\d{4,}\b branch of
+# INVENTED_NUMBER above. A digit run written immediately after "@" is a mention, not a
+# reference number, so mentions are removed before the check runs. The pattern is
+# deliberately narrow: only "@" followed by digits to the end of the token. Every other
+# number - a bare 8842190, an amount, an order or reference id - still trips the guard.
+ANON_MENTION = re.compile(r"@\d+\b")
 
 PROMPT = """You are drafting a PUBLIC reply from Spotify's support account on Twitter.
 
@@ -67,9 +77,7 @@ RULES - all of them are hard:
 CUSTOMER MESSAGE:
 {message}"""
 
-STUB = ("Sorry for the trouble here. Try signing out and back in, and make sure the app "
-        "is on the latest version. If it's still happening, send us a DM and we'll take "
-        "a closer look.")
+
 
 
 def build_prompt(evidence: list[dict[str, Any]]) -> str:
@@ -82,13 +90,26 @@ def build_prompt(evidence: list[dict[str, Any]]) -> str:
 
 
 def guardrails(text: str, customer_text: str) -> dict[str, bool]:
-    g = H.guardrails(text, customer_text)
-    g["no_invented_number"] = not INVENTED_NUMBER.search(text)
+    """Guardrails for a GENERATED public reply.
+
+    Two differences from the handoff set, both about which checks apply here
+    rather than about what any check does:
+
+    * private-channel routing is not required - an AUTO_OK draft is a public
+      reply by construction (see handoff.guardrails);
+    * anonymised @mentions are excluded from the invented-number check.
+    """
+    g = H.guardrails(text, customer_text, require_private_routing=False)
+    g["no_invented_number"] = not INVENTED_NUMBER.search(ANON_MENTION.sub(" ", text))
     return g
 
 
-def run(policy: str, split: str, csv_path: str, allow_api: bool, dry_run: bool,
-        limit: int | None) -> int:
+def run(policy: str, split: str, csv_path: str, allow_api: bool,
+        provider_name: str, base_url: str | None, limit: int | None,
+        model: str | None = None) -> int:
+    provider = PR.get_provider(
+        provider_name, CL.model_for("drafting", provider_name, model), base_url)
+    is_mock = bool(getattr(provider, "is_mock", False))
     esc_path = os.path.join(PRED_DIR, f"escalation_{policy}_{split}.csv")
     if not os.path.exists(esc_path):
         raise SystemExit(f"no policy predictions at {esc_path}; run scripts/policy.py --all")
@@ -118,12 +139,8 @@ def run(policy: str, split: str, csv_path: str, allow_api: bool, dry_run: bool,
                               exclude_customers=[g["customer_id"]],
                               exclude_threads=[g["thread_id"]], exclude_tweets=[g["tweet_id"]])
         prompt = build_prompt(hits)
-        if dry_run:
-            text, cached = STUB, "dry-run"
-        else:
-            blob = CL.cached_call("draft", CL.MODELS["drafting"], prompt, it["text"],
-                                  DRAFT_PARAMS, allow_api)
-            text, cached = blob["text"], blob["cached"]
+        blob = CL.cached_call("draft", provider, prompt, it["text"], DRAFT_PARAMS, allow_api)
+        text, cached = blob["text"], blob["cached"]
         gr = guardrails(text, it["text"])
         bad = [k for k, v in gr.items() if not v]
         if bad:                                  # fail safe: a bad draft becomes a handoff
@@ -138,24 +155,25 @@ def run(policy: str, split: str, csv_path: str, allow_api: bool, dry_run: bool,
                          "template_id": "", "reply": text, "n_evidence": len(hits),
                          "guardrails_passed": True, "guardrails_failed": "", "cached": cached})
 
-    suffix = "_dryrun" if dry_run else ""
+    suffix = "_mock" if is_mock else ""
     out = os.path.join(PRED_DIR, f"drafts_{policy}_{split}{suffix}.csv")
     os.makedirs(PRED_DIR, exist_ok=True)
     pd.DataFrame(rows).to_csv(out, index=False, encoding="utf-8")
-    meta = {"policy": policy, "split": split, "dry_run": dry_run,
-            "model": None if dry_run else CL.MODELS["drafting"], "params": DRAFT_PARAMS,
+    meta = {"policy": policy, "split": split, "is_mock": is_mock,
+            "provider": provider.name, "model": provider.model, "params": DRAFT_PARAMS,
             "k_evidence": K_EVIDENCE, "n_items": len(rows),
             "n_auto_reply": sum(1 for r in rows if r["route"] == "auto_reply"),
             "n_handoff": sum(1 for r in rows if r["route"] == "handoff"),
             "n_guardrail_fallback": fallbacks,
-            "usage": None if dry_run else CL.usage_summary()}
+            "usage": CL.usage_summary()}
     with open(out.replace(".csv", ".meta.json"), "w", encoding="utf-8") as fh:
         json.dump(meta, fh, indent=2)
     print(f"[draft] {len(rows)} items -> {out}")
     print(f"  auto_reply {meta['n_auto_reply']}   handoff {meta['n_handoff']}   "
           f"guardrail fallback {fallbacks}")
-    if not dry_run:
-        print(f"  usage: {json.dumps(meta['usage'])}")
+    print(f"  usage: {json.dumps(meta['usage'])}")
+    if is_mock:
+        print("  *** MOCK PROVIDER - stub replies, NOT a result. Pipeline exercise only. ***")
     return 0
 
 
@@ -189,6 +207,34 @@ def selftest() -> int:
         g = guardrails(text, cust)
         chk(g.get(expect) is False, f"{label} is caught by {expect}")
 
+    # --- regressions for the two guardrail-APPLICATION fixes -------------------
+    print("\n  -- anonymised @handles vs genuinely invented numbers --")
+    chk(guardrails("@115888 Hey! Can you tell us your device and OS?", cust)
+        ["no_invented_number"],
+        "anonymised handle @115888 does NOT trip no_invented_number")
+    chk(guardrails("@116130 @448281 thanks for flagging, we're on it.", cust)
+        ["no_invented_number"],
+        "several anonymised handles do NOT trip no_invented_number")
+    chk(not guardrails("Your reference 8842190 is being processed.", cust)
+        ["no_invented_number"],
+        "a genuinely invented reference 8842190 STILL trips no_invented_number")
+    chk(not guardrails("We've refunded £47.30 to your card.", cust)["no_invented_number"],
+        "an invented amount STILL trips no_invented_number")
+    chk(not guardrails("@115888 your order 9931002 shipped.", cust)["no_invented_number"],
+        "a handle plus an invented number still trips it (handle is not a shield)")
+
+    print("\n  -- public drafts vs handoff replies on private routing --")
+    public = ("Try the Repeat option to switch that off, and Shuffle to mix up the "
+              "playlist order.")
+    chk(all(guardrails(public, cust).values()),
+        "a legitimate public AUTO_OK reply with no DM request now passes")
+    chk("routes_to_private_channel" not in guardrails(public, cust),
+        "routes_to_private_channel is not applied on the drafting path")
+    chk(not H.guardrails("Thanks, we have noted that.")["routes_to_private_channel"],
+        "a handoff reply with no private routing STILL fails (guard intact by default)")
+    chk(all(H.guardrails(H.render("account_access")).values()),
+        "every handoff template still routes privately and passes its own set")
+
     print(f"\n{'SELFTEST PASSED' if ok else 'SELFTEST FAILED'}")
     return 0 if ok else 1
 
@@ -199,10 +245,10 @@ def main() -> int:
     ap.add_argument("--policy", default="lookup-codebook-distant-lr")
     ap.add_argument("--split", default="golden")
     ap.add_argument("--csv", default="twcs/twcs.csv")
+    ap.add_argument("--provider", default=PR.DEFAULT_PROVIDER, choices=list(PR.PROVIDERS))
+    ap.add_argument("--base-url")
+    ap.add_argument("--model", help="model id; overrides the provider default")
     ap.add_argument("--allow-api", action="store_true")
-    ap.add_argument("--dry-run", action="store_true",
-                    help="exercise retrieval, prompt, guardrails and routing with a fixed "
-                         "offline stub reply; never touches the API or the real cache")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--show-prompt", action="store_true")
     ap.add_argument("--selftest", action="store_true")
@@ -212,7 +258,8 @@ def main() -> int:
     if args.show_prompt:
         print(build_prompt([{"opener": "<past customer message>", "reply": "<spotify reply>"}]))
         return 0
-    return run(args.policy, args.split, args.csv, args.allow_api, args.dry_run, args.limit)
+    return run(args.policy, args.split, args.csv, args.allow_api,
+               args.provider, args.base_url, args.limit, args.model)
 
 
 if __name__ == "__main__":

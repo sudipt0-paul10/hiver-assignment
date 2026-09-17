@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 5, \"routing\": 3, \"tone\": 5, \"acceptable\": true, \"why\": \"Does not address the customer's concern about a fake verified account\"}", "input_tokens": 297, "output_tokens": 49, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 5, \"grounded\": 5, \"routing\": 4, \"tone\": 5, \"acceptable\": true, \"why\": \"Apologizes for frustration and offers help, but doesn't address the specific issue with Discover Weekly\"}", "input_tokens": 311, "output_tokens": 56, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

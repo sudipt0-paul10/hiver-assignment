@@ -1,0 +1,23 @@
+{
+  "construction": "distant-supervision LR probability mass on the intents the codebook marks escalation_role=independent; threshold 0.5 fixed a priori, NOT tuned (no labelled dev set exists, D23)",
+  "proxy_baseline": true,
+  "uses_human_labels": false,
+  "note": "the only policy here with a continuous score, so the only one that can draw a risk-coverage curve rather than a single point",
+  "reason_stage": {
+    "construction": "deterministic ordered rules over MUST proxies, a PII pattern, the DM-follow-up marker, the failed-self-service proxy, an anger pattern and an out-of-scope pattern; ties broken by BR-9 (independent authority first). No golden label is read and nothing was tuned.",
+    "rule_activations": {
+      "fallback:ambiguous": 76,
+      "fallback:payment_dispute": 13,
+      "rule:account_access": 10,
+      "rule:high_frustration": 5,
+      "rule:security": 5,
+      "rule:failed_self_service": 3,
+      "rule:existing_case": 3,
+      "rule:out_of_scope": 1,
+      "fallback:account_access": 5,
+      "rule:safety_abuse": 1,
+      "rule:payment_dispute": 4,
+      "rule:legal_rights": 1
+    }
+  }
+}

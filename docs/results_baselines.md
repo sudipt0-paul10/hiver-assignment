@@ -25,7 +25,7 @@ how it was constructed.
 |---|---|---|---|---|
 | `rule` | seed regex written on train; nothing fitted | **39.4% [32.1, 47.1]** | 47.5% [40.7, 54.4] | 0.474 |
 | `distant-lr` | *proxy baseline* — TF-IDF+LR fitted on those seeds' output over train | **42.5% [35.1, 50.2]** | 50.0% [43.1, 56.9] | 0.520 |
-| `llm` | zero-shot on the locked codebook | **not run** — no API key, needs D19 approval | | |
+| `llm` | zero-shot `llama3.2:3b` on the locked codebook | **38.1% [31.0, 45.8]** | 42.0% [35.4, 48.9] | 0.333 |
 
 **Quote the core column.** Two gold items carry an intent outside the taxonomy
 (G158, G179); no classifier can emit those values, so they count as errors.
@@ -152,23 +152,41 @@ labelled that way in the harness output, the prediction metadata and every table
 5. **No threshold was tuned.** The 0.5 cut is a priori because no labelled dev set
    exists. A tuned operating point would likely score better and could not be
    defended.
-6. **One annotator, one pass.** The D12 retest (`docs/retest.md`) is drawn and due
-   2026-09-19; until it runs, none of these numbers has a reliability ceiling
-   attached.
+6. **One annotator, one pass.** The D12 retest (`docs/retest.md`) is drawn and
+   verified 9/9, with a pre-registered earliest start of 2026-09-19 — after the
+   2026-09-17 deadline, and the gate was not moved. No number here has a
+   reliability ceiling attached, and none is implied.
 7. **Two gold items sit outside the taxonomy**, unresolved, and count as errors.
 
-## 4. The LLM classifier — implemented, not run
+## 4. The LLM classifier — run, and it lost
 
-`scripts/classify.py --predict llm` is written and its prompt is inspectable with
-`--show-prompt`. The prompt is assembled from `docs/codebook.json` alone:
-intent definitions, confusable pairs and the boundary rules. No golden item
-appears in it, and `--dev-sample N` exists so prompt work draws on dev text only.
-Every call is cached under `cache/llm/` keyed on model, prompt and message, so a
-second run is free.
+`scripts/classify.py --predict llm` assembles its prompt from
+`docs/codebook.json` alone: intent definitions, confusable pairs and the boundary
+rules. No golden item appears in it (inspect with `--show-prompt`), and
+`--dev-sample N` exists so prompt work draws on dev text only. Every call is
+cached under `cache/llm/` keyed on provider, model, prompt and message.
 
-It has not been run: there is no `ANTHROPIC_API_KEY` on this machine and the SDK
-is not installed. Running it spends against the D19 budget and needs explicit
-authorisation — the script refuses without `--allow-api` and says so.
+**Run 2026-09-16 on `llama3.2:3b`** via a local OpenAI-compatible server
+(D24): 200 items, 0 billed calls, **$0.00**. No Anthropic key was ever present.
+
+It scores **38.1% [31.0, 45.8]** on core — below `distant-lr` (42.5%) and below
+the trivial regex (39.4%) — with macro-F1 **0.333**, the worst of the three.
+Paired McNemar finds no significant difference between any pair: `distant-lr` vs
+`llm` b=41 c=25 p=0.0640; `llm` vs `rule` b=27 c=38 p=0.2145. **At n=200 the
+three classifiers are statistically indistinguishable and the point estimates
+favour the cheapest.**
+
+The macro-F1 collapse is a class-coverage failure, not a uniform one. The model
+**never emitted `app_device_technical` in 200 predictions** despite it being the
+largest gold class (34 items), and emitted `playback_playlist` once; F1 = 0.00 on
+both. 167 of its 200 predictions fall in three classes (`other_unclear` 73,
+`account_access` 53, `product_feature_feedback` 41).
+
+One useful side effect: the LLM is not derived from the seed rules, so it gives
+the circularity claim in §1.2 an independent check. It scores 57.5% on the
+`targeted` stratum against 80.0% for both seed-derived classifiers, and its
+targeted-to-core gap is 19pp against their 38–41pp — which is what circularity
+predicts.
 
 ---
 

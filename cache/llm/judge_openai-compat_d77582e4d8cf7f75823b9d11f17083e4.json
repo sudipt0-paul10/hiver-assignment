@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 2, \"routing\": 3, \"tone\": 5, \"acceptable\": false, \"why\": \"missing escalation of account issue\"}", "input_tokens": 327, "output_tokens": 42, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

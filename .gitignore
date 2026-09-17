@@ -43,6 +43,9 @@ scratch/
 # directory, so a negation inside one would never match.
 cache/*
 !cache/llm/
+# Mock-provider cache entries are deterministic and rebuilt in seconds; only
+# real-provider responses are worth committing for offline reproduction.
+cache/llm/*_mock_*
 # cache/corpus/ stays out: it is a 14 MB pickle rebuilt from twcs.csv in ~30 s.
 
 # ---- generated evaluation outputs ----

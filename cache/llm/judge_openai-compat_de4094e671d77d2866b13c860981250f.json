@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 4, \"grounded\": 5, \"routing\": 3, \"tone\": 5, \"acceptable\": false, \"why\": \"Does not address the customer's issue with the white screen loading problem.\"}", "input_tokens": 319, "output_tokens": 51, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

@@ -39,6 +39,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import classify as CL  # noqa: E402
 import profile as P  # noqa: E402
+import providers as PR  # noqa: E402
 
 PRED_DIR = CL.PRED_DIR
 JUDGE_PARAMS: dict[str, Any] = {"max_tokens": 300, "temperature": 0.0}
@@ -109,12 +110,11 @@ def corrupt(kind: str, reply: str, other_reply: str) -> str:
 
 
 PROBE_KINDS = ["wrong_intent", "fabricated_fact", "missing_escalation", "hostile_tone"]
-STUB_JUDGE = '{"addresses_need": 4, "grounded": 4, "routing": 4, "tone": 5, ' \
-             '"acceptable": true, "why": "offline stub"}'
 
 
-def _load(policy: str, split: str, dry_run: bool) -> tuple[list[dict[str, str]], pd.DataFrame]:
-    suffix = "_dryrun" if dry_run else ""
+
+def _load(policy: str, split: str, is_mock: bool) -> tuple[list[dict[str, str]], pd.DataFrame]:
+    suffix = "_mock" if is_mock else ""
     path = os.path.join(PRED_DIR, f"drafts_{policy}_{split}{suffix}.csv")
     if not os.path.exists(path):
         raise SystemExit(f"no drafts at {path}; run scripts/draft.py first")
@@ -123,32 +123,31 @@ def _load(policy: str, split: str, dry_run: bool) -> tuple[list[dict[str, str]],
     return items, pd.read_csv(path, keep_default_na=False)
 
 
-def _judge_one(customer: str, reply: str, allow_api: bool, dry_run: bool) -> tuple[Any, str]:
-    if dry_run:
-        return parse(STUB_JUDGE), "dry-run"
-    blob = CL.cached_call("judge", CL.MODELS["judge"], PROMPT,
+def _judge_one(customer: str, reply: str, allow_api: bool, provider: Any) -> tuple[Any, str]:
+    blob = CL.cached_call("judge", provider, PROMPT,
                           build_judge_input(customer, reply), JUDGE_PARAMS, allow_api)
     return parse(blob["text"]), blob["cached"]
 
 
-def run_judge(policy: str, split: str, allow_api: bool, dry_run: bool, limit: int | None) -> int:
-    items, drafts = _load(policy, split, dry_run)
+def run_judge(policy: str, split: str, allow_api: bool, provider: Any, limit: int | None) -> int:
+    is_mock = bool(getattr(provider, "is_mock", False))
+    items, drafts = _load(policy, split, is_mock)
     text = {i["id"]: i["text"] for i in items}
     rows = []
     for _, d in (drafts.head(limit) if limit else drafts).iterrows():
-        v, cached = _judge_one(text[d["id"]], d["reply"], allow_api, dry_run)
+        v, cached = _judge_one(text[d["id"]], d["reply"], allow_api, provider)
         rows.append({"id": d["id"], "route": d["route"], "parsed": v is not None,
                      **({k: v[k] for k in DIMENSIONS} if v else {k: "" for k in DIMENSIONS}),
                      "acceptable": v["acceptable"] if v else "",
                      "why": v["why"] if v else "", "cached": cached})
-    suffix = "_dryrun" if dry_run else ""
+    suffix = "_mock" if is_mock else ""
     out = os.path.join(PRED_DIR, f"judge_{policy}_{split}{suffix}.csv")
     pd.DataFrame(rows).to_csv(out, index=False, encoding="utf-8")
     bad = sum(1 for r in rows if not r["parsed"])
-    meta = {"policy": policy, "dry_run": dry_run,
-            "model": None if dry_run else CL.MODELS["judge"], "params": JUDGE_PARAMS,
+    meta = {"policy": policy, "is_mock": is_mock, "provider": provider.name,
+            "model": provider.model, "params": JUDGE_PARAMS,
             "n": len(rows), "unparseable": bad,
-            "usage": None if dry_run else CL.usage_summary()}
+            "usage": CL.usage_summary()}
     with open(out.replace(".csv", ".meta.json"), "w", encoding="utf-8") as fh:
         json.dump(meta, fh, indent=2)
     print(f"[judge] {len(rows)} replies -> {out}   unparseable {bad}")
@@ -159,13 +158,15 @@ def run_judge(policy: str, split: str, allow_api: bool, dry_run: bool, limit: in
         for dim in DIMENSIONS:
             vals = [r[dim] for r in ok]
             print(f"  mean {dim:<16} {sum(vals)/len(vals):.2f}")
-    if not dry_run:
-        print(f"  usage: {json.dumps(meta['usage'])}")
+    print(f"  usage: {json.dumps(meta['usage'])}")
+    if is_mock:
+        print("  *** MOCK PROVIDER - stub verdicts, NOT a result. ***")
     return 0
 
 
-def run_probes(policy: str, split: str, allow_api: bool, dry_run: bool, n: int) -> int:
-    items, drafts = _load(policy, split, dry_run)
+def run_probes(policy: str, split: str, allow_api: bool, provider: Any, n: int) -> int:
+    is_mock = bool(getattr(provider, "is_mock", False))
+    items, drafts = _load(policy, split, is_mock)
     text = {i["id"]: i["text"] for i in items}
     clean = drafts[drafts["route"] == "auto_reply"].reset_index(drop=True)
     if len(clean) < 2:
@@ -176,12 +177,12 @@ def run_probes(policy: str, split: str, allow_api: bool, dry_run: bool, n: int) 
         other = clean.iloc[(int(i) + 1) % len(clean)]["reply"]
         for kind in PROBE_KINDS:
             bad = corrupt(kind, d["reply"], other)
-            v, cached = _judge_one(text[d["id"]], bad, allow_api, dry_run)
+            v, cached = _judge_one(text[d["id"]], bad, allow_api, provider)
             rows.append({"id": d["id"], "defect": kind, "parsed": v is not None,
                          "acceptable": v["acceptable"] if v else "",
                          "grounded": v["grounded"] if v else "",
                          "tone": v["tone"] if v else "", "cached": cached})
-    suffix = "_dryrun" if dry_run else ""
+    suffix = "_mock" if is_mock else ""
     out = os.path.join(PRED_DIR, f"probes_{policy}_{split}{suffix}.csv")
     pd.DataFrame(rows).to_csv(out, index=False, encoding="utf-8")
     print(f"[probes] {len(rows)} corrupted replies -> {out}")
@@ -192,15 +193,15 @@ def run_probes(policy: str, split: str, allow_api: bool, dry_run: bool, n: int) 
             caught = sum(1 for r in g if r["acceptable"] is False)
             lo, hi = P.wilson(caught, len(g))
             print(f"  {kind:<20} {caught}/{len(g)}  [{lo:.0%}, {hi:.0%}]")
-    if dry_run:
-        print("  NOTE: the offline stub always answers 'acceptable', so detection cannot be")
-        print("  validated without a real call. This run proves construction and plumbing only.")
+    if is_mock:
+        print("  NOTE: the mock judges on surface features only, so these detection rates")
+        print("  measure the harness, not a judge. A real provider is required to qualify it.")
     return 0
 
 
-def rating_sheet(policy: str, split: str, n: int) -> int:
+def rating_sheet(policy: str, split: str, n: int, mock_drafts: bool = False) -> int:
     """Blank sheet for D11's human reply-quality ratings. No labels, no judge output."""
-    items, drafts = _load(policy, split, False)
+    items, drafts = _load(policy, split, mock_drafts)
     text = {i["id"]: i["text"] for i in items}
     import numpy as np
     rng = np.random.default_rng(11)                      # D11
@@ -219,6 +220,21 @@ def rating_sheet(policy: str, split: str, n: int) -> int:
 
 
 def agreement(policy: str, split: str) -> int:
+    """Judge-vs-human agreement on the D11 rubric.
+
+    Reports, per field: n, raw (exact-match) agreement, and Cohen's kappa. The
+    kappa implementation is imported from scripts/retest_sample.py so the same
+    coefficient is used here and for D12's intra-annotator ceiling.
+
+    Two things are deliberately NOT reported. There is no confidence interval on
+    kappa: the project has no bootstrap or variance machinery, and inventing one
+    would be fabricating a statistic. And the four 1-5 dimensions are scored by
+    EXACT match, so a 4-vs-5 disagreement counts as a full miss - a weighted kappa
+    would be kinder and is not implemented. Both limitations are printed with the
+    numbers rather than left for a reader to discover.
+    """
+    from retest_sample import kappa                 # single kappa implementation
+
     hp = os.path.join("data", "golden", f"human_ratings_{policy}.csv")
     jp = os.path.join(PRED_DIR, f"judge_{policy}_{split}.csv")
     for p_ in (hp, jp):
@@ -229,14 +245,48 @@ def agreement(policy: str, split: str) -> int:
     done = hum[hum["acceptable"].astype(str).str.strip() != ""]
     if not len(done):
         raise SystemExit("no human ratings filled in yet")
-    pairs = [(r["id"], str(r["acceptable"]).strip().lower()[:1],
-              str(jud.loc[r["id"], "acceptable"]).strip().lower()[:1])
-             for _, r in done.iterrows() if r["id"] in jud.index]
-    k = sum(1 for _, h, j in pairs if (h == "y") == (j == "t"))
-    lo, hi = P.wilson(k, len(pairs))
-    print(f"[agreement] judge vs human on 'acceptable': {k}/{len(pairs)} = "
-          f"{k/len(pairs):.1%}  [{lo:.1%}, {hi:.1%}]")
-    print("  Read against the D12 self-agreement ceiling (docs/retest.md), not against 100%.")
+    rated = [r for _, r in done.iterrows() if r["id"] in jud.index]
+    if not rated:
+        raise SystemExit("no rated item matches a judged item")
+
+    print(f"=== judge vs human agreement  (policy: {policy}, split: {split}) ===")
+    print(f"human-rated examples available : {len(done)}")
+    print(f"matched to a judge verdict     : {len(rated)}")
+    print(f"human ratings file             : {hp}")
+    print(f"judge output file              : {jp}")
+
+    # --- primary field: the overall verdict, binary ---------------------------
+    h = ["yes" if str(r["acceptable"]).strip().lower().startswith("y") else "no" for r in rated]
+    j = ["yes" if str(jud.loc[r["id"], "acceptable"]).strip().lower().startswith("t") else "no"
+         for r in rated]
+    k = sum(1 for x, y in zip(h, j) if x == y)
+    lo, hi = P.wilson(k, len(rated))
+    print("\n--- field: 'acceptable'  (binary verdict; human y/n vs judge true/false) ---")
+    print(f"  n              {len(rated)}")
+    print(f"  raw agreement  {k}/{len(rated)} = {k/len(rated):.1%}   Wilson 95% [{lo:.1%}, {hi:.1%}]")
+    print(f"  Cohen's kappa  {kappa(h, j):.3f}   (no interval - see the note below)")
+
+    # --- secondary: the four rubric dimensions, exact match on 1-5 ------------
+    print("\n--- fields: rubric dimensions (1-5, EXACT match) ---")
+    print(f"  {'field':<18}{'n':>5}{'raw':>9}{'kappa':>9}")
+    for f in DIMENSIONS:
+        pairs = [(str(r[f]).strip(), str(jud.loc[r["id"], f]).strip()) for r in rated
+                 if str(r.get(f, "")).strip() and str(jud.loc[r["id"], f]).strip()]
+        if not pairs:
+            print(f"  {f:<18}{0:>5}{'-':>9}{'-':>9}   (not rated)")
+            continue
+        a = [x for x, _ in pairs]
+        b = [y for _, y in pairs]
+        agree = sum(1 for x, y in pairs if x == y)
+        print(f"  {f:<18}{len(pairs):>5}{agree/len(pairs):>8.1%}{kappa(a, b):>9.3f}")
+
+    print("\n  Cohen's kappa carries no confidence interval here: this project has no")
+    print("  bootstrap machinery and a fabricated interval would be worse than none.")
+    print("  Dimension kappas use EXACT match on a 1-5 scale, so adjacent scores count")
+    print("  as full disagreement; treat them as a lower bound.")
+    print("  Read every figure against the D12 self-agreement ceiling (docs/retest.md),")
+    print("  not against 100%: the ceiling is what a single annotator achieves with")
+    print("  themselves, and the judge cannot be expected to beat it.")
     return 0
 
 
@@ -279,8 +329,10 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--policy", default="lookup-codebook-distant-lr")
     ap.add_argument("--split", default="golden")
+    ap.add_argument("--provider", default=PR.DEFAULT_PROVIDER, choices=list(PR.PROVIDERS))
+    ap.add_argument("--base-url")
+    ap.add_argument("--model", help="model id; overrides the provider default")
     ap.add_argument("--allow-api", action="store_true")
-    ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--probes", action="store_true")
     ap.add_argument("--rating-sheet", type=int, metavar="N")
     ap.add_argument("--agreement", action="store_true")
@@ -295,13 +347,16 @@ def main() -> int:
     if args.show_prompt:
         print(PROMPT.replace("{message}", build_judge_input("<customer message>", "<reply>")))
         return 0
+    prov = PR.get_provider(args.provider,
+                           CL.model_for("judge", args.provider, args.model), args.base_url)
     if args.rating_sheet:
-        return rating_sheet(args.policy, args.split, args.rating_sheet)
+        return rating_sheet(args.policy, args.split, args.rating_sheet,
+                            bool(getattr(prov, "is_mock", False)))
     if args.agreement:
         return agreement(args.policy, args.split)
     if args.probes:
-        return run_probes(args.policy, args.split, args.allow_api, args.dry_run, args.probe_items)
-    return run_judge(args.policy, args.split, args.allow_api, args.dry_run, args.limit)
+        return run_probes(args.policy, args.split, args.allow_api, prov, args.probe_items)
+    return run_judge(args.policy, args.split, args.allow_api, prov, args.limit)
 
 
 if __name__ == "__main__":

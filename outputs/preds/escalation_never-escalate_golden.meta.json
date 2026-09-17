@@ -1,0 +1,8 @@
+{
+  "construction": "constant AUTO_OK; coverage 100%, unsafe-auto = the base rate",
+  "uses_human_labels": false,
+  "reason_stage": {
+    "construction": "deterministic ordered rules over MUST proxies, a PII pattern, the DM-follow-up marker, the failed-self-service proxy, an anger pattern and an out-of-scope pattern; ties broken by BR-9 (independent authority first). No golden label is read and nothing was tuned.",
+    "rule_activations": {}
+  }
+}

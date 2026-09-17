@@ -41,6 +41,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import annotate_pilot as AP  # noqa: E402
 import corpus as C  # noqa: E402
+import providers as PR  # noqa: E402
 import profile as P  # noqa: E402
 
 PRED_DIR = os.path.join("outputs", "preds")
@@ -79,6 +80,18 @@ MODELS: dict[str, str] = {
     "judge": "claude-sonnet-5",                  # Option A: stronger tier, D20 mitigation
 }
 LLM_MODEL = MODELS["classifier"]
+
+
+def model_for(role: str, provider: str, override: str | None = None) -> str | None:
+    """Model id for a role.
+
+    An explicit --model always wins. With no override, 'anthropic' uses the pinned
+    Option A ids and every other provider falls through to its own default, which
+    keeps behaviour identical to before the flag existed.
+    """
+    if override:
+        return override
+    return MODELS[role] if provider == "anthropic" else None
 LLM_PARAMS: dict[str, Any] = {"max_tokens": 16, "temperature": 0.0}
 
 
@@ -210,44 +223,20 @@ def build_prompt(codebook_path: str = "docs/codebook.json") -> str:
 
 class LLMClassifier:
     name = "llm"
-    construction = "zero-shot, prompted with the locked codebook; no human labels in the prompt"
+    construction = "prompted with the locked codebook; no human labels in the prompt"
 
-    def __init__(self, model: str = LLM_MODEL, prompt: str | None = None) -> None:
-        self.model = model
+    def __init__(self, provider_name: str = PR.DEFAULT_PROVIDER,
+                 base_url: str | None = None, prompt: str | None = None,
+                 model: str | None = None) -> None:
+        self.provider = PR.get_provider(
+            provider_name, model_for("classifier", provider_name, model), base_url)
         self.prompt = prompt or build_prompt()
-        os.makedirs(LLM_CACHE, exist_ok=True)
-        self._client = None
 
-    def _cache_path(self, message: str) -> str:
-        h = hashlib.sha256(
-            json.dumps([self.model, self.prompt, LLM_PARAMS, message],
-                       sort_keys=True).encode()).hexdigest()[:32]
-        return os.path.join(LLM_CACHE, f"intent_{h}.json")
-
-    def classify(self, message: str, allow_api: bool) -> str:
-        path = self._cache_path(message)
-        if os.path.exists(path):
-            return json.load(open(path, encoding="utf-8"))["intent"]
-        if not allow_api:
-            raise SystemExit(
-                "LLM classification needs an API call and --allow-api was not passed.\n"
-                "Every call is cached under cache/llm/, so a second run costs nothing,\n"
-                "but the first run spends against the D19 budget and must be authorised.")
-        load_env_file()
-        if not os.environ.get("ANTHROPIC_API_KEY"):
-            raise SystemExit("ANTHROPIC_API_KEY is not set. Put it in .env (git-ignored) "
-                             "or export it for this command only.")
-        if self._client is None:
-            import anthropic  # imported lazily so the module works with no SDK installed
-            self._client = anthropic.Anthropic()
-        resp = self._client.messages.create(
-            model=self.model, **LLM_PARAMS,
-            messages=[{"role": "user", "content": self.prompt.replace("{message}", message)}])
-        raw = resp.content[0].text.strip().lower()
-        intent = raw if raw in AP.INTENTS else "other_unclear"
-        with open(path, "w", encoding="utf-8") as fh:
-            json.dump({"model": self.model, "raw": raw, "intent": intent}, fh)
-        return intent
+    def classify(self, message: str, allow_api: bool) -> tuple[str, dict[str, Any]]:
+        blob = cached_call("intent", self.provider, self.prompt, message,
+                           LLM_PARAMS, allow_api)
+        raw = (blob.get("text") or "").strip().lower()
+        return (raw if raw in AP.INTENTS else "other_unclear"), blob
 
 
 # ---------------------------------------------------------------------------
@@ -260,7 +249,9 @@ def golden_texts() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def predict(which: str, split: str, csv_path: str, allow_api: bool) -> int:
+def predict(which: str, split: str, csv_path: str, allow_api: bool,
+            provider_name: str = PR.DEFAULT_PROVIDER, base_url: str | None = None,
+            model: str | None = None) -> int:
     pairs = C.opener_pairs(C.load(csv_path))
     train = pairs[(pairs["split"] == "train") & (pairs["clean"].str.len() > 0)]
     if split == "golden":
@@ -286,15 +277,19 @@ def predict(which: str, split: str, csv_path: str, allow_api: bool) -> int:
         pred, proba, classes = m.predict(items["text"])
         extra_cols["max_proba"] = proba.max(1).round(4)
     elif which == "llm":
-        m2 = LLMClassifier()
+        m2 = LLMClassifier(provider_name, base_url, model=model)
         meta["construction"] = m2.construction
-        meta["model"] = m2.model
+        meta["provider"] = m2.provider.name
+        meta["model"] = m2.provider.model
+        meta["is_mock"] = bool(getattr(m2.provider, "is_mock", False))
         meta["prompt_sha256"] = hashlib.sha256(m2.prompt.encode()).hexdigest()[:16]
-        pred = pd.Series([m2.classify(t, allow_api) for t in items["text"]], index=items.index)
+        pred = pd.Series([m2.classify(t, allow_api)[0] for t in items["text"]],
+                         index=items.index)
     else:
         raise SystemExit(f"unknown classifier {which!r}")
 
-    out = os.path.join(PRED_DIR, f"intent_{which}_{split}.csv")
+    suffix = "_mock" if meta.get("is_mock") else ""
+    out = os.path.join(PRED_DIR, f"intent_{which}_{split}{suffix}.csv")
     frame = pd.DataFrame({"id": items["id"], "pred_intent": pred, **extra_cols})
     frame.to_csv(out, index=False, encoding="utf-8")
     with open(out.replace(".csv", ".meta.json"), "w", encoding="utf-8") as fh:
@@ -302,6 +297,14 @@ def predict(which: str, split: str, csv_path: str, allow_api: bool) -> int:
     print(f"[{which}] {len(frame)} predictions -> {out}")
     print(f"  construction: {meta['construction']}")
     print(f"  distribution: {dict(frame['pred_intent'].value_counts())}")
+    if meta.get("is_mock"):
+        print("  *** MOCK PROVIDER - these are stub outputs, NOT a result. "
+              "They exist to exercise the pipeline. ***")
+    if which == "llm":
+        meta["usage"] = usage_summary()
+        with open(out.replace(".csv", ".meta.json"), "w", encoding="utf-8") as fh:
+            json.dump(meta, fh, indent=2)
+        print(f"  usage: {json.dumps(meta['usage'])}")
     return 0
 
 
@@ -312,50 +315,47 @@ def predict(which: str, split: str, csv_path: str, allow_api: bool) -> int:
 USAGE: list[dict[str, Any]] = []       # in-process record; also persisted per entry
 
 
-def cache_path(tag: str, model: str, prompt: str, params: dict[str, Any], message: str) -> str:
-    h = hashlib.sha256(json.dumps([model, prompt, params, message],
+def cache_path(tag: str, provider: str, model: str, prompt: str,
+               params: dict[str, Any], message: str) -> str:
+    """Cache key covers provider and model as well as prompt, params and message.
+
+    Including the provider is what keeps a mock run and a real run from ever
+    sharing an entry - the two must never silently substitute for each other.
+    """
+    h = hashlib.sha256(json.dumps([provider, model, prompt, params, message],
                                   sort_keys=True).encode()).hexdigest()[:32]
-    return os.path.join(LLM_CACHE, f"{tag}_{h}.json")
+    return os.path.join(LLM_CACHE, f"{tag}_{provider}_{h}.json")
 
 
-def cached_call(tag: str, model: str, prompt: str, message: str,
+def cached_call(tag: str, provider: Any, prompt: str, message: str,
                 params: dict[str, Any], allow_api: bool) -> dict[str, Any]:
-    """Return {text, cached, input_tokens, output_tokens}. Replays cache before spending.
+    """Replay the cache, else call the provider. Returns the response as a dict.
 
-    `prompt` must contain the literal placeholder {message}; the customer text is
-    substituted at call time and is part of the cache key, so no two messages can
-    share an entry.
+    `provider` is a providers.Provider instance. Only billed providers are gated
+    by --allow-api; the mock and a self-hosted OpenAI-compatible server are free
+    and run unguarded.
     """
     os.makedirs(LLM_CACHE, exist_ok=True)
-    path = cache_path(tag, model, prompt, params, message)
+    path = cache_path(tag, provider.name, provider.model, prompt, params, message)
     if os.path.exists(path):
         blob = json.load(open(path, encoding="utf-8"))
         blob["cached"] = True
-        USAGE.append({"tag": tag, "model": model, "cached": True,
-                      "input_tokens": blob.get("input_tokens", 0),
-                      "output_tokens": blob.get("output_tokens", 0)})
+        USAGE.append({"tag": tag, "cached": True, **{k: blob.get(k) for k in
+                      ("provider", "model", "is_mock", "input_tokens", "output_tokens")}})
         return blob
-    if not allow_api:
+    if PR.is_billed(provider.name) and not allow_api:
         raise SystemExit(
-            f"[{tag}] needs an API call and --allow-api was not passed.\n"
-            "Every call is cached under cache/llm/, so a second run costs nothing,\n"
-            "but the first run spends against the D19 budget and must be authorised.")
-    load_env_file()
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise SystemExit("ANTHROPIC_API_KEY is not set. Put it in .env (git-ignored).")
-    import anthropic
-    client = anthropic.Anthropic()
-    resp = client.messages.create(
-        model=model, **params,
-        messages=[{"role": "user", "content": prompt.replace("{message}", message)}])
-    blob = {"model": model, "text": resp.content[0].text.strip(),
-            "input_tokens": resp.usage.input_tokens,
-            "output_tokens": resp.usage.output_tokens}
+            f"[{tag}] provider '{provider.name}' spends real money and --allow-api was "
+            "not passed.\nRun with the default --provider mock, or a self-hosted "
+            "--provider openai-compat, to stay free.")
+    if PR.is_billed(provider.name):
+        load_env_file()
+    blob = provider.complete(prompt, message, params).as_dict()
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(blob, fh)
     blob["cached"] = False
-    USAGE.append({"tag": tag, "model": model, "cached": False,
-                  "input_tokens": blob["input_tokens"], "output_tokens": blob["output_tokens"]})
+    USAGE.append({"tag": tag, "cached": False, **{k: blob.get(k) for k in
+                  ("provider", "model", "is_mock", "input_tokens", "output_tokens")}})
     return blob
 
 
@@ -364,25 +364,30 @@ PRICES = {"claude-haiku-4-5-20251001": (1.0, 5.0), "claude-sonnet-5": (2.0, 10.0
 
 
 def usage_summary() -> dict[str, Any]:
-    out: dict[str, Any] = {"calls": 0, "cached": 0, "billed": 0, "usd": 0.0, "by_model": {}}
+    out: dict[str, Any] = {"calls": 0, "cached": 0, "billed_calls": 0, "usd": 0.0,
+                           "any_mock": False, "by_provider": {}}
     for u in USAGE:
         out["calls"] += 1
-        out["cached" if u["cached"] else "billed"] += 1
-        m = out["by_model"].setdefault(u["model"], {"calls": 0, "cached": 0,
-                                                    "input_tokens": 0, "output_tokens": 0,
-                                                    "usd": 0.0})
+        out["any_mock"] = out["any_mock"] or bool(u.get("is_mock"))
+        k = f"{u.get('provider')}:{u.get('model')}"
+        m = out["by_provider"].setdefault(k, {"calls": 0, "cached": 0, "input_tokens": 0,
+                                              "output_tokens": 0, "usd": 0.0,
+                                              "is_mock": bool(u.get("is_mock"))})
         m["calls"] += 1
         if u["cached"]:
+            out["cached"] += 1
             m["cached"] += 1
-            continue                       # a replayed call costs nothing
-        m["input_tokens"] += u["input_tokens"]
-        m["output_tokens"] += u["output_tokens"]
-        pi, po = PRICES.get(u["model"], (0.0, 0.0))
-        cost = u["input_tokens"] / 1e6 * pi + u["output_tokens"] / 1e6 * po
-        m["usd"] += cost
-        out["usd"] += cost
+            continue
+        m["input_tokens"] += u.get("input_tokens") or 0
+        m["output_tokens"] += u.get("output_tokens") or 0
+        if PR.is_billed(u.get("provider") or ""):
+            out["billed_calls"] += 1
+            c = PR.cost_usd(u.get("model") or "", u.get("input_tokens") or 0,
+                            u.get("output_tokens") or 0)
+            m["usd"] += c
+            out["usd"] += c
     out["usd"] = round(out["usd"], 4)
-    for m in out["by_model"].values():
+    for m in out["by_provider"].values():
         m["usd"] = round(m["usd"], 4)
     return out
 
@@ -390,8 +395,9 @@ def usage_summary() -> dict[str, Any]:
 SECRET_RE = __import__("re").compile(r"sk-ant-[A-Za-z0-9_\-]{8,}")
 
 
-def preflight() -> int:
-    """The six checks required before the first paid call. Prints no secret."""
+def preflight(provider_name: str = PR.DEFAULT_PROVIDER, base_url: str | None = None,
+              model: str | None = None) -> int:
+    """Config check for the selected provider. Makes no call and prints no secret."""
     import glob
     import subprocess
     ok = True
@@ -401,24 +407,35 @@ def preflight() -> int:
         ok = ok and good
         print(f"  [{'PASS' if good else 'FAIL'}] {label}{('  - ' + detail) if detail else ''}")
 
-    print("=== PREFLIGHT (Option A) - no API call is made by this command ===")
+    prov = PR.get_provider(provider_name, model_for("classifier", provider_name, model),
+                           base_url)
+    billed = PR.is_billed(provider_name)
+    mock = bool(getattr(prov, "is_mock", False))
+    print(f"=== PREFLIGHT - provider '{provider_name}' - no call is made by this command ===")
 
-    print("\n1. pinned model ids")
-    for role, mid in MODELS.items():
-        print(f"     {role:<12} {mid}")
-    chk(MODELS["classifier"] == MODELS["drafting"] == "claude-haiku-4-5-20251001"
-        and MODELS["judge"] == "claude-sonnet-5",
-        "models match Option A as approved (Haiku 4.5 classify+draft, Sonnet 5 judge)")
+    print("\n1. provider and models")
+    print(f"     provider     {provider_name}{'  (BILLED)' if billed else '  (free)'}"
+          f"{'  [MOCK - stub output, never a result]' if mock else ''}")
+    for role in ("classifier", "drafting", "judge"):
+        print(f"     {role:<12} {model_for(role, provider_name, model) or prov.model}"
+              f"{'  (--model override)' if model else ''}")
+    chk(provider_name in PR.PROVIDERS, "provider is registered")
+    if provider_name == "anthropic":
+        chk(MODELS["classifier"] == MODELS["drafting"] == "claude-haiku-4-5-20251001"
+            and MODELS["judge"] == "claude-sonnet-5",
+            "anthropic models match Option A (Haiku 4.5 classify+draft, Sonnet 5 judge)")
 
-    print("\n2. SDK")
-    try:
-        import anthropic
-        ver = anthropic.__version__
-    except ImportError:
-        ver = None
-    req = open("requirements.txt", encoding="utf-8").read() if os.path.exists("requirements.txt") else ""
-    chk(ver is not None, "anthropic SDK importable", f"v{ver}" if ver else "not installed")
-    chk("anthropic==" in req, "requirements.txt pins the anthropic SDK")
+    print("\n2. dependencies")
+    if provider_name == "anthropic":
+        try:
+            import anthropic
+            ver = anthropic.__version__
+        except ImportError:
+            ver = None
+        chk(ver is not None, "anthropic SDK importable (optional extra)",
+            f"v{ver}" if ver else "pip install anthropic")
+    else:
+        chk(True, "no extra dependency needed", f"provider '{provider_name}' is self-contained")
 
     print("\n3. secret hygiene")
     try:
@@ -443,28 +460,29 @@ def preflight() -> int:
     print("     only {model, prompt_sha256} - no key, no prompt text, no credential")
 
     print("\n4. credential")
-    present, shape = api_key_status()
-    chk(present, "ANTHROPIC_API_KEY loaded from environment or .env", shape)
+    if billed:
+        present, shape = api_key_status()
+        chk(present, "ANTHROPIC_API_KEY loaded from environment or .env", shape)
+    else:
+        chk(True, "no credential required", f"provider '{provider_name}' is free")
 
     print("\n5. cache")
-    probe = LLMClassifier.__new__(LLMClassifier)
-    probe.model, probe.prompt = MODELS["classifier"], build_prompt()
-    key_inputs = ["model", "prompt", "params", "message"]
-    chk(True, "cache key = sha256(json([model, prompt, params, message]))",
-        " + ".join(key_inputs))
+    chk(True, "cache key = sha256(json([provider, model, prompt, params, message]))",
+        "provider is in the key, so mock and real entries can never collide")
     print(f"     cache dir: {LLM_CACHE}   existing entries: "
           f"{len(glob.glob(os.path.join(LLM_CACHE, '*.json')))}")
     print(f"     params: {LLM_PARAMS}")
 
     print("\n6. final configuration")
-    print(f"     classifier model   {MODELS['classifier']}")
-    print(f"     drafting model     {MODELS['drafting']}")
-    print(f"     judge model        {MODELS['judge']}")
+    print(f"     provider           {provider_name}{'  (BILLED)' if billed else '  (free)'}")
+    print(f"     classifier model   {model_for('classifier', provider_name, model) or prov.model}")
+    print(f"     drafting model     {model_for('drafting', provider_name, model) or prov.model}")
+    print(f"     judge model        {model_for('judge', provider_name, model) or prov.model}")
     print(f"     params             {LLM_PARAMS}")
     print(f"     prompt sha256      {hashlib.sha256(build_prompt().encode()).hexdigest()[:16]}")
     print(f"     prompt length      {len(build_prompt())} chars")
     print(f"     cache              {LLM_CACHE} (sha256-keyed, replayed before any call)")
-    print(f"     api key            {shape}")
+    print(f"     credential         {api_key_status()[1] if billed else 'not required'}")
     print(f"\n{'PREFLIGHT PASSED' if ok else 'PREFLIGHT FAILED - do not run the pipeline'}")
     return 0 if ok else 1
 
@@ -478,13 +496,19 @@ def main() -> int:
     ap.add_argument("--show-prompt", action="store_true")
     ap.add_argument("--dev-sample", type=int, metavar="N",
                     help="print N dev openers - the only material permitted for prompt work")
+    ap.add_argument("--provider", default=PR.DEFAULT_PROVIDER, choices=list(PR.PROVIDERS),
+                    help="mock (default, offline and free) | openai-compat (self-hosted) "
+                         "| anthropic (billed)")
+    ap.add_argument("--base-url", help="OpenAI-compatible endpoint for --provider openai-compat")
+    ap.add_argument("--model", help="model id to use; overrides the provider default "
+                                    "(e.g. llama3.2:3b). Omit to keep existing behaviour.")
     ap.add_argument("--allow-api", action="store_true",
-                    help="authorise live API calls (D19 budget); results are cached")
+                    help="authorise a BILLED provider (D19 budget); responses are cached")
     ap.add_argument("--csv", default="twcs/twcs.csv")
     args = ap.parse_args()
 
     if args.preflight:
-        return preflight()
+        return preflight(args.provider, args.base_url, args.model)
     if args.show_prompt:
         print(build_prompt())
         return 0
@@ -498,7 +522,8 @@ def main() -> int:
         return 0
     if not args.predict:
         ap.error("pass --predict {rule,distant-lr,llm}, --show-prompt or --dev-sample N")
-    return predict(args.predict, args.split, args.csv, args.allow_api)
+    return predict(args.predict, args.split, args.csv, args.allow_api,
+                   args.provider, args.base_url, args.model)
 
 
 if __name__ == "__main__":

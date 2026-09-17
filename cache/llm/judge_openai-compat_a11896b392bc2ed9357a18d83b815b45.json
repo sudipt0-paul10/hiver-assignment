@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 2, \"grounded\": 1, \"routing\": 1, \"tone\": 1, \"acceptable\": false, \"why\": \"Does not address customer's request for audiobooks\"}", "input_tokens": 277, "output_tokens": 47, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

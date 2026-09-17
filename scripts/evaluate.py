@@ -99,17 +99,23 @@ def eval_intent(gold: pd.DataFrame, subset: dict[str, str],
           f"counted as errors.\nAccuracy excluding them is shown alongside.")
 
     results: dict[str, Any] = {}
-    for path in sorted(glob.glob(os.path.join(PRED_DIR, "intent_*_golden.csv"))):
-        name = os.path.basename(path).replace("intent_", "").replace("_golden.csv", "")
+    for path in sorted(glob.glob(os.path.join(PRED_DIR, "intent_*_golden*.csv"))):
+        name = (os.path.basename(path).replace("intent_", "")
+                .replace("_golden.csv", "").replace("_golden_mock.csv", "_mock"))
         meta = meta_for(path)
+        mock = bool(meta.get("is_mock"))
         pred = dict(zip(*pd.read_csv(path)[["id", "pred_intent"]].values.T))
         ids = [i for i in gold["id"] if i in pred]
         rows = {"full": ids,
                 "core": [i for i in ids if subset[i] == "core"],
                 "targeted": [i for i in ids if subset[i] == "targeted"],
                 "valid-gold-only": [i for i in ids if i not in invalid]}
-        print(f"\n--- {name} ---")
+        print(f"\n--- {name}{'  [MOCK PROVIDER - NOT A RESULT]' if mock else ''} ---")
         print(f"    construction: {meta.get('construction', 'unrecorded')}")
+        if mock:
+            print(f"    provider:     {meta.get('provider')} / {meta.get('model')}")
+            print("    Stub output. Numbers below measure the harness, not a classifier,")
+            print("    and are excluded from the baseline comparison and from McNemar.")
         if meta.get("proxy_baseline"):
             print("    LABEL TYPE:   distant supervision (proxy baseline) — NOT supervised")
         res: dict[str, Any] = {"construction": meta.get("construction"),
@@ -142,8 +148,12 @@ def eval_intent(gold: pd.DataFrame, subset: dict[str, str],
             print(f"      {fam:<18} {ci(k, len(fids))}   n={len(fids)}{mark}")
             fam_acc[fam] = {"correct": k, "n": len(fids)}
         res["accuracy_by_stratum_family"] = fam_acc
+        res["is_mock"] = mock
+        res["provider"] = meta.get("provider")
         results[name] = res
-        results.setdefault("_correct", {})[name] = [g[i] == pred[i] for i in gold["id"] if i in pred]
+        if not mock:
+            results.setdefault("_correct", {})[name] = [g[i] == pred[i]
+                                                        for i in gold["id"] if i in pred]
 
     print("\n--- CIRCULARITY WARNING ---")
     print("  The 14 `targeted:<intent>` items were SELECTED because a seed family matched")
@@ -419,11 +429,11 @@ def eval_drafts(gold: pd.DataFrame) -> dict[str, Any]:
     for path in sorted(glob.glob(os.path.join(PRED_DIR, "drafts_*_golden*.csv"))):
         name = os.path.basename(path).replace("drafts_", "").replace(".csv", "")
         df = pd.read_csv(path, keep_default_na=False)
-        dry = name.endswith("_dryrun")
+        dry = bool(meta_for(path).get("is_mock")) or name.endswith("_dryrun")
         routes = Counter(df["route"])
         auto = df[df["route"] == "auto_reply"]
         unsafe = sum(1 for _, r in auto.iterrows() if gesc.get(r["id"]) == "ESCALATE")
-        print(f"\n--- {name}{'  [DRY RUN - offline stub, not model output]' if dry else ''} ---")
+        print(f"\n--- {name}{'  [MOCK PROVIDER - stub output, NOT a result]' if dry else ''} ---")
         print(f"  routes: {dict(routes)}")
         print(f"  guardrail fallbacks to handoff: {routes.get('handoff_fallback', 0)}")
         print(f"  unsafe-auto among generated replies: {ci(unsafe, len(auto))}  n={len(auto)}")
@@ -445,7 +455,7 @@ def eval_drafts(gold: pd.DataFrame) -> dict[str, Any]:
                 caught = sum(1 for _, r in g.iterrows() if str(r["acceptable"]).lower() == "false")
                 print(f"    {kind:<20} {ci(caught, len(g))}  n={len(g)}")
             if dry:
-                print("    (dry run: the stub always answers acceptable - plumbing only)")
+                print("    (mock provider: surface features only - harness check, not a judge)")
     if not out:
         print("\n  no draft files yet - run scripts/draft.py")
     return out

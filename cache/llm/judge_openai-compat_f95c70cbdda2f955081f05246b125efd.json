@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 2, \"grounded\": 5, \"routing\": 3, \"tone\": 5, \"acceptable\": true, \"why\": \"Does not address the customer's specific question about the 6-month-free Spotify offer\"}", "input_tokens": 303, "output_tokens": 53, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}

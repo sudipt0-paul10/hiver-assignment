@@ -37,10 +37,18 @@ import gc
 import json
 import math
 import re
-import resource
 import sys
 import time
 from typing import Any
+
+# ``resource`` is Unix-only. It backs exactly one thing in this project - the
+# peak-RSS diagnostic below - and no measurement, metric, split, label or decision
+# depends on it. Rather than shim a fake module onto sys.modules, the import is
+# made conditional and peak_mb() picks a per-platform implementation.
+try:
+    import resource                                    # noqa: F401  (Unix only)
+except ImportError:                                    # Windows
+    resource = None
 
 import numpy as np
 import pandas as pd
@@ -108,8 +116,45 @@ GOLDEN_CORE_SIZES = (160, 200)
 # helpers
 # --------------------------------------------------------------------------
 def peak_mb() -> float:
-    """Peak resident set size in MB (Linux reports ru_maxrss in KB)."""
-    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+    """Peak resident set size in MB, or NaN if the OS will not report it.
+
+    Diagnostic only - printed by the CLIs and recorded as one field in the
+    profiling JSON. Nothing in the evaluation reads it.
+
+    * Unix: ``resource.getrusage`` exactly as before (Linux reports KB).
+    * Windows: ``psapi.GetProcessMemoryInfo`` -> ``PeakWorkingSetSize``, which is
+      the genuine platform equivalent, reached through ctypes so no dependency is
+      added.
+    * Anything else, or a failed call: NaN, which prints as "nan" and is written
+      as JSON null. A fabricated 0.0 would read as a measurement.
+    """
+    if resource is not None:
+        return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class _ProcessMemoryCounters(ctypes.Structure):
+            _fields_ = [("cb", wintypes.DWORD),
+                        ("PageFaultCount", wintypes.DWORD),
+                        ("PeakWorkingSetSize", ctypes.c_size_t),
+                        ("WorkingSetSize", ctypes.c_size_t),
+                        ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                        ("PagefileUsage", ctypes.c_size_t),
+                        ("PeakPagefileUsage", ctypes.c_size_t)]
+
+        counters = _ProcessMemoryCounters()
+        counters.cb = ctypes.sizeof(_ProcessMemoryCounters)
+        if ctypes.WinDLL("psapi").GetProcessMemoryInfo(
+                ctypes.WinDLL("kernel32").GetCurrentProcess(),
+                ctypes.byref(counters), counters.cb):
+            return counters.PeakWorkingSetSize / (1024 * 1024)
+    except Exception:                                  # not Windows, or psapi refused
+        pass
+    return float("nan")
 
 
 def wilson(k: int, n: int, z: float = 1.959963985) -> tuple[float, float]:
@@ -497,7 +542,9 @@ def main() -> int:
         report["brands"][b] = profile_brand(b, sub, args.leakage)
 
     report["runtime_sec"] = round(time.time() - t0, 1)
-    report["peak_rss_mb"] = round(peak_mb(), 1)
+    _peak = peak_mb()
+    # NaN is not valid JSON; emit null rather than a number the OS never gave us
+    report["peak_rss_mb"] = round(_peak, 1) if _peak == _peak else None
 
     print(json.dumps(report, indent=2, default=str))
     if args.json:

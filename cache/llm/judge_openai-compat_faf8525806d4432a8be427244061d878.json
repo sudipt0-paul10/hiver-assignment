@@ -1,0 +1,1 @@
+{"text": "{\"addresses_need\": 2, \"grounded\": 4, \"routing\": 3, \"tone\": 4, \"acceptable\": false, \"why\": \"Does not address the customer's specific issue with the charges and refunds.\"}", "input_tokens": 342, "output_tokens": 51, "provider": "openai-compat", "model": "llama3.2:3b", "is_mock": false}
